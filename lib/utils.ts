@@ -9,7 +9,7 @@ export function getCurrency(countryCode: string): string {
   switch (countryCode) {
     case "IN":
       return "INR"
-    case "AED":
+    case "AE":
       return "AED"
     default:
       return ""

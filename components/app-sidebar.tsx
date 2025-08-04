@@ -21,18 +21,24 @@ import {
   Building2,
   User,
   Landmark,
+  Loader,
 } from "lucide-react";
 import Link from "next/link";
 
 const menuItems = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: BarChart3,
-  },
+  // {
+  //   title: "Dashboard",
+  //   url: "/dashboard",
+  //   icon: BarChart3,
+  // },
   {
     title: "Process Payroll",
     url: "/dashboard/payroll",
+    icon: Loader,
+  },
+  {
+    title: "Payroll Results",
+    url: "/dashboard/payroll-results",
     icon: Calculator,
   },
   {

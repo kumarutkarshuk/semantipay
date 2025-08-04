@@ -1,5 +1,5 @@
 import { get } from "http";
-import { Compliance, Employee } from "./types";
+import { Compliance, Employee, PayrollResult, WorkRecord } from "./types";
 
 export async function fetchEmployees():Promise<Employee[]> {
   const baseUrl = getBaseUrl();
@@ -18,6 +18,28 @@ export async function fetchCompliance():Promise<Compliance[]> {
 
   if (!response.ok) {
     throw new Error("failed to fetch compliance data");
+  }
+  
+  return response.json();
+}
+
+export async function fetchWorkRecords():Promise<WorkRecord[]> {
+  const baseUrl = getBaseUrl();
+  const response = await fetch(`${baseUrl}/api/work-records`);
+
+  if (!response.ok) {
+    throw new Error("failed to fetch work records");
+  }
+  
+  return response.json();
+}
+
+export async function fetchPayrollResults():Promise<PayrollResult[]> {
+  const baseUrl = getBaseUrl();
+  const response = await fetch(`${baseUrl}/api/payroll-results`);
+
+  if (!response.ok) {
+    throw new Error("failed to fetch payroll results");
   }
   
   return response.json();

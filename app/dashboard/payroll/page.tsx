@@ -44,39 +44,36 @@ import { AlertTriangle, Play, Edit, Users, UserCheck } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { PayrollTableSkeleton } from "@/components/loading-skeletons";
 import { useUser } from "@clerk/nextjs";
+import { useQuery } from "@tanstack/react-query";
+import { Employee, WorkRecord } from "@/lib/types";
+import { fetchEmployees, fetchWorkRecords } from "@/lib/next-api";
+import { getCurrency } from "@/lib/utils";
 
 // Mock data
-const employees = [
-  { id: "1", name: "John Doe", code: "E001", hourlyRate: 50 },
-  { id: "2", name: "Jane Smith", code: "E002", hourlyRate: 45 },
-  { id: "3", name: "Mike Johnson", code: "E003", hourlyRate: 40 },
-  { id: "4", name: "Sarah Wilson", code: "E004", hourlyRate: 48 },
-];
-
-const mockPayrollData = [
+const workRecords: WorkRecord[] = [
   {
-    id: "1",
-    employeeId: "1",
-    employeeName: "John Doe",
-    hoursWorked: 160,
-    hourlyRate: 50,
-    grossPay: 8000,
-    netPay: 6400,
-    violations: "Overtime rate calculation error",
-    status: "violation",
+    employee_id: 1,
+    name: "John Doe",
+    employee_code: "EMP001",
+    country_code: "IN",
+    record_id: 1,
+    hourly_rate: 500.00,
+    work_month: "2025-07-01",
+    hours_worked: 160.00,
+    overtime_hours: 10.00,
   },
   {
-    id: "2",
-    employeeId: "2",
-    employeeName: "Jane Smith",
-    hoursWorked: 160,
-    hourlyRate: 45,
-    grossPay: 7200,
-    netPay: 5760,
-    violations: null,
-    status: "processed",
-  },
-];
+    employee_id: 1,
+    name: "Don Joe",
+    employee_code: "EMP001",
+    country_code: "AE",
+    record_id: 2,
+    hourly_rate: 1000.00,
+    work_month: "2025-07-01",
+    hours_worked: 100.00,
+    overtime_hours: 5.00,
+  }
+]
 
 const months = [
   // "January",
@@ -93,34 +90,33 @@ const months = [
   // "December",
 ];
 
+const isLoading = false
+
 export default function PayrollPage() {
-  const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<string>("");
+  const [selectedEmployees, setSelectedEmployees] = useState<number[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<string>("July");
   const [selectedYear, setSelectedYear] = useState<string>("2025");
-  const [payrollData, setPayrollData] = useState(mockPayrollData);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [editingRecord, setEditingRecord] = useState<any>(null);
   const [editForm, setEditForm] = useState({ hourlyRate: "", hoursWorked: "" });
 
-  const {isLoaded, user} = useUser();
+  // const {
+  //   data: workRecords,
+  //   isLoading,
+  // } = useQuery<WorkRecord[]>({
+  //   queryKey: ["workRecords"],
+  //   queryFn: fetchWorkRecords,
+  // });
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleEmployeeSelection = (employeeId: string, checked: boolean) => {
+  const handleEmployeeSelection = (employeeId: number, checked: boolean) => {
     setSelectedEmployees((prev) =>
       checked ? [...prev, employeeId] : prev.filter((id) => id !== employeeId)
     );
   };
 
   const handleSelectAll = () => {
-    const allEmployeeIds = employees.map((emp) => emp.id);
-    const isAllSelected = selectedEmployees.length === employees.length;
+    const allEmployeeIds = workRecords ? workRecords.map((w) => w.employee_id) : [];
+    const isAllSelected = workRecords && selectedEmployees.length === workRecords.length;
 
     if (isAllSelected) {
       setSelectedEmployees([]);
@@ -143,31 +139,15 @@ export default function PayrollPage() {
     });
   };
 
-  const saveChanges = () => {
-    setPayrollData((prev) =>
-      prev.map((record) =>
-        record.id === editingRecord.id
-          ? {
-              ...record,
-              hourlyRate: Number.parseFloat(editForm.hourlyRate),
-              hoursWorked: Number.parseFloat(editForm.hoursWorked),
-              grossPay:
-                Number.parseFloat(editForm.hourlyRate) *
-                Number.parseFloat(editForm.hoursWorked),
-              violations: null,
-              status: "processed",
-            }
-          : record
-      )
-    );
-    setEditingRecord(null);
-  };
+  // const saveChanges = () => {
+    
+  // };
 
-  const isAllSelected = selectedEmployees.length === employees.length;
+  const isAllSelected = workRecords && selectedEmployees.length === workRecords.length;
   const isPartialSelected =
-    selectedEmployees.length > 0 && selectedEmployees.length < employees.length;
+    workRecords && selectedEmployees.length > 0 && selectedEmployees.length < workRecords.length;
 
-  if (isLoading || !isLoaded) {
+  if (isLoading) {
     return (
       <SidebarInset>
         <header className="flex h-14 sm:h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -372,7 +352,7 @@ export default function PayrollPage() {
                       </motion.div>
                       {isAllSelected
                         ? "Deselect All"
-                        : `Select All (${employees.length})`}
+                        : `Select All (${workRecords?.length})`}
                     </Button>
                   </motion.div>
                 </div>
@@ -386,16 +366,16 @@ export default function PayrollPage() {
                     className="bg-primary/10 border border-primary/20 rounded-lg p-3"
                   >
                     <p className="text-sm text-primary font-medium">
-                      {selectedEmployees.length} of {employees.length} employees
+                      {selectedEmployees.length} of {workRecords?.length} employees
                       selected
                     </p>
                   </motion.div>
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {employees.map((employee, index) => (
+                  {workRecords?.map((record, index) => (
                     <motion.div
-                      key={employee.id}
+                      key={record.employee_id}
                       className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -405,7 +385,7 @@ export default function PayrollPage() {
                     >
                       <motion.div
                         animate={{
-                          scale: selectedEmployees.includes(employee.id)
+                          scale: selectedEmployees.includes(record.employee_id)
                             ? 1.1
                             : 1,
                         }}
@@ -416,11 +396,11 @@ export default function PayrollPage() {
                         }}
                       >
                         <Checkbox
-                          id={employee.id}
-                          checked={selectedEmployees.includes(employee.id)}
+                          id={String(record.employee_id)}
+                          checked={selectedEmployees.includes(record.employee_id)}
                           onCheckedChange={(checked) =>
                             handleEmployeeSelection(
-                              employee.id,
+                              record.employee_id,
                               checked as boolean
                             )
                           }
@@ -428,16 +408,16 @@ export default function PayrollPage() {
                       </motion.div>
                       <div className="flex-1 min-w-0">
                         <label
-                          htmlFor={employee.id}
+                          htmlFor={String(record.employee_id)}
                           className="text-sm font-medium cursor-pointer"
                         >
-                          {employee.name}
+                          {record.name}
                         </label>
                         <p className="text-xs text-muted-foreground">
-                          {employee.code}
+                          {record.employee_code}
                         </p>
                       </div>
-                      {selectedEmployees.includes(employee.id) && (
+                      {selectedEmployees.includes(record.employee_id) && (
                         <motion.div
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
@@ -460,7 +440,7 @@ export default function PayrollPage() {
           </Card>
         </motion.div>
 
-        {/* Payroll Results */}
+        {/* Work Records */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -469,18 +449,18 @@ export default function PayrollPage() {
           <Card className="hover:shadow-md transition-shadow duration-300">
             <CardHeader className="pb-4">
               <CardTitle className="text-base sm:text-lg">
-                Payroll Results
+                Work Records
               </CardTitle>
-              <CardDescription className="text-sm">
+              {/* <CardDescription className="text-sm">
                 Review processed payroll and handle any violations
-              </CardDescription>
+              </CardDescription> */}
             </CardHeader>
             <CardContent>
               {/* Mobile-friendly table */}
               <div className="space-y-4 sm:hidden">
-                {payrollData.map((record, index) => (
+                {workRecords?.map((record, index) => (
                   <motion.div
-                    key={record.id}
+                    key={record.record_id}
                     className="border rounded-lg p-4 space-y-3 hover:shadow-sm transition-shadow"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -488,7 +468,7 @@ export default function PayrollPage() {
                     whileHover={{ scale: 1.01 }}
                   >
                     <div className="flex items-center justify-between">
-                      <h3 className="font-medium">{record.employeeName}</h3>
+                      <h3 className="font-medium">{record.name}</h3>
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
@@ -499,14 +479,6 @@ export default function PayrollPage() {
                           damping: 30,
                         }}
                       >
-                        {record.violations ? (
-                          <Badge variant="destructive" className="gap-1">
-                            <AlertTriangle className="h-3 w-3" />
-                            Violation
-                          </Badge>
-                        ) : (
-                          <Badge variant="default">Processed</Badge>
-                        )}
                       </motion.div>
                     </div>
                     <motion.div
@@ -516,95 +488,26 @@ export default function PayrollPage() {
                       transition={{ delay: index * 0.1 + 1.5, duration: 0.4 }}
                     >
                       <div>
-                        <span className="text-muted-foreground">Hours:</span>{" "}
-                        {record.hoursWorked}
+                        <span className="text-muted-foreground">Employee Code:</span>
+                        {record.employee_code}
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Rate:</span> $
-                        {record.hourlyRate}
+                        <span className="text-muted-foreground">Name:</span> 
+                        {record.name}
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Gross:</span> $
-                        {record.grossPay.toLocaleString()}
+                        <span className="text-muted-foreground">Hourly Rate:</span> 
+                        {`${record.hourly_rate} (${getCurrency(record.country_code)})`}
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Net:</span> $
-                        {record.netPay.toLocaleString()}
+                        <span className="text-muted-foreground">Hours Worked:</span>
+                        {record.hours_worked}
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Overtime Hours:</span>
+                        {record.overtime_hours}
                       </div>
                     </motion.div>
-                    {record.violations && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 + 1.6, duration: 0.4 }}
-                      >
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <motion.div
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="w-full bg-transparent"
-                                onClick={() => openEditDialog(record)}
-                              >
-                                <Edit className="h-4 w-4 mr-1" />
-                                Rectify Violation
-                              </Button>
-                            </motion.div>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-md">
-                            <DialogHeader>
-                              <DialogTitle>
-                                Rectify Payroll Violation
-                              </DialogTitle>
-                              <DialogDescription>
-                                Violation: {record.violations}
-                              </DialogDescription>
-                            </DialogHeader>
-                            <div className="space-y-4">
-                              <div className="space-y-2">
-                                <Label htmlFor="hourlyRate">Hourly Rate</Label>
-                                <Input
-                                  id="hourlyRate"
-                                  type="number"
-                                  value={editForm.hourlyRate}
-                                  onChange={(e) =>
-                                    setEditForm((prev) => ({
-                                      ...prev,
-                                      hourlyRate: e.target.value,
-                                    }))
-                                  }
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <Label htmlFor="hoursWorked">
-                                  Hours Worked
-                                </Label>
-                                <Input
-                                  id="hoursWorked"
-                                  type="number"
-                                  value={editForm.hoursWorked}
-                                  onChange={(e) =>
-                                    setEditForm((prev) => ({
-                                      ...prev,
-                                      hoursWorked: e.target.value,
-                                    }))
-                                  }
-                                />
-                              </div>
-                            </div>
-                            <DialogFooter>
-                              <Button onClick={saveChanges} className="w-full">
-                                Save Changes
-                              </Button>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
-                      </motion.div>
-                    )}
                   </motion.div>
                 ))}
               </div>
@@ -619,19 +522,17 @@ export default function PayrollPage() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Employee</TableHead>
-                        <TableHead>Hours</TableHead>
-                        <TableHead>Rate</TableHead>
-                        <TableHead>Gross Pay</TableHead>
-                        <TableHead>Net Pay</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>Employee Code</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Hourly Rate</TableHead>
+                        <TableHead>Hours Worked</TableHead>
+                        <TableHead>Overtime Hours</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {payrollData.map((record, index) => (
+                      {workRecords?.map((record, index) => (
                         <motion.tr
-                          key={record.id}
+                          key={record.employee_id}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{
@@ -641,106 +542,15 @@ export default function PayrollPage() {
                           className="hover:bg-muted/50 transition-colors"
                         >
                           <TableCell className="font-medium">
-                            {record.employeeName}
+                            {record.employee_code}
                           </TableCell>
-                          <TableCell>{record.hoursWorked}</TableCell>
-                          <TableCell>${record.hourlyRate}</TableCell>
+                          <TableCell>{record.name}</TableCell>
+                          <TableCell>{`${record.hourly_rate} (${getCurrency(record.country_code)})`}</TableCell>
                           <TableCell>
-                            ${record.grossPay.toLocaleString()}
-                          </TableCell>
-                          <TableCell>
-                            ${record.netPay.toLocaleString()}
+                            {record.hours_worked}
                           </TableCell>
                           <TableCell>
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{
-                                delay: index * 0.1 + 1.6,
-                                type: "spring",
-                                stiffness: 500,
-                                damping: 30,
-                              }}
-                            >
-                              {record.violations ? (
-                                <Badge variant="destructive" className="gap-1">
-                                  <AlertTriangle className="h-3 w-3" />
-                                  Violation
-                                </Badge>
-                              ) : (
-                                <Badge variant="default">Processed</Badge>
-                              )}
-                            </motion.div>
-                          </TableCell>
-                          <TableCell>
-                            {record.violations && (
-                              <Dialog>
-                                <DialogTrigger asChild>
-                                  <motion.div
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                  >
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => openEditDialog(record)}
-                                    >
-                                      <Edit className="h-4 w-4 mr-1" />
-                                      Rectify
-                                    </Button>
-                                  </motion.div>
-                                </DialogTrigger>
-                                <DialogContent>
-                                  <DialogHeader>
-                                    <DialogTitle>
-                                      Rectify Payroll Violation
-                                    </DialogTitle>
-                                    <DialogDescription>
-                                      Violation: {record.violations}
-                                    </DialogDescription>
-                                  </DialogHeader>
-                                  <div className="space-y-4">
-                                    <div className="space-y-2">
-                                      <Label htmlFor="hourlyRate">
-                                        Hourly Rate
-                                      </Label>
-                                      <Input
-                                        id="hourlyRate"
-                                        type="number"
-                                        value={editForm.hourlyRate}
-                                        onChange={(e) =>
-                                          setEditForm((prev) => ({
-                                            ...prev,
-                                            hourlyRate: e.target.value,
-                                          }))
-                                        }
-                                      />
-                                    </div>
-                                    <div className="space-y-2">
-                                      <Label htmlFor="hoursWorked">
-                                        Hours Worked
-                                      </Label>
-                                      <Input
-                                        id="hoursWorked"
-                                        type="number"
-                                        value={editForm.hoursWorked}
-                                        onChange={(e) =>
-                                          setEditForm((prev) => ({
-                                            ...prev,
-                                            hoursWorked: e.target.value,
-                                          }))
-                                        }
-                                      />
-                                    </div>
-                                  </div>
-                                  <DialogFooter>
-                                    <Button onClick={saveChanges}>
-                                      Save Changes
-                                    </Button>
-                                  </DialogFooter>
-                                </DialogContent>
-                              </Dialog>
-                            )}
+                            {record.overtime_hours}
                           </TableCell>
                         </motion.tr>
                       ))}

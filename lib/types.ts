@@ -24,3 +24,23 @@ export interface Compliance {
   threshold_value: number;
   formula: string;
 }
+
+export interface WorkRecord {
+  employee_id: number;
+  name: string;
+  employee_code: string;
+  country_code: string;
+  record_id: number;
+  hourly_rate: number;
+  work_month: string; // check for date data type
+  hours_worked: number;
+  overtime_hours: number;
+}
+
+export interface PayrollResult extends WorkRecord{
+  gross_pay: number;
+  deductions?: string;
+  net_pay: number;
+  status: "DONE" | "PENDING" | "VIOLATION" | "FAILED";
+  violation_reason?: string;
+}
