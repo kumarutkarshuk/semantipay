@@ -6,6 +6,7 @@ export async function GET() {
     const response: PayrollResult[] = await callTiDBDataService("/payrollResults", HttpMethod.GET) as PayrollResult[];
     return new Response(JSON.stringify(response));
   } catch (err) {
+    console.error(err)
     return new Response(JSON.stringify(err), {
       status: 500,
     });

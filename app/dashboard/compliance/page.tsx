@@ -50,13 +50,13 @@ const compliance: Compliance[] = [
 const isLoading = false;
 
 export default function CompliancePage() {
-  // const {
-  //   data: compliance,
-  //   isLoading,
-  // } = useQuery<Compliance[]>({
-  //   queryKey: ["compliance"],
-  //   queryFn: fetchCompliance,
-  // });
+  const {
+    data: compliance,
+    isLoading,
+  } = useQuery<Compliance[]>({
+    queryKey: ["compliance"],
+    queryFn: fetchCompliance,
+  });
 
   if (isLoading) {
     return (

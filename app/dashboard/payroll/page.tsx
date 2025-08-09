@@ -44,10 +44,12 @@ import { AlertTriangle, Play, Edit, Users, UserCheck } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { PayrollSkeleton } from "@/components/loading-skeletons";
 import { useUser } from "@clerk/nextjs";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Employee, WorkRecord } from "@/lib/types";
-import { fetchEmployees, fetchWorkRecords } from "@/lib/next-api";
+import { fetchEmployees, fetchWorkRecords, processPayroll } from "@/lib/next-api";
 import { getCurrency } from "@/lib/utils";
+import { toast } from "sonner"
+import { useRouter } from "next/navigation";
 
 // Mock data
 const workRecords: WorkRecord[] = [
@@ -63,7 +65,7 @@ const workRecords: WorkRecord[] = [
     overtime_hours: 10.0,
   },
   {
-    employee_id: 1,
+    employee_id: 2,
     name: "Don Joe",
     employee_code: "EMP001",
     country_code: "AE",
@@ -96,21 +98,44 @@ export default function PayrollPage() {
   const [selectedEmployees, setSelectedEmployees] = useState<number[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string>("July");
   const [selectedYear, setSelectedYear] = useState<string>("2025");
-  const [isProcessing, setIsProcessing] = useState(false);
+  // const [isProcessing, setIsProcessing] = useState(false);
   // const [editingRecord, setEditingRecord] = useState<any>(null);
   // const [editForm, setEditForm] = useState({ hourlyRate: "", hoursWorked: "" });
 
-  // const {
-  //   data: workRecords,
-  //   isLoading,
-  // } = useQuery<WorkRecord[]>({
-  //   queryKey: ["workRecords"],
-  //   queryFn: fetchWorkRecords,
-  // });
+  const queryClient = useQueryClient()
+  const router = useRouter()
 
-  const handleEmployeeSelection = (employeeId: number, checked: boolean) => {
+  const {
+    data: workRecords,
+    isLoading,
+  } = useQuery<WorkRecord[]>({
+    queryKey: ["workRecords"],
+    queryFn: fetchWorkRecords,
+  });
+
+  const {mutate, isPending} = useMutation({
+    mutationFn: processPayroll,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['workRecords'] })
+      await queryClient.invalidateQueries({ queryKey: ['payrollResults'] })
+      toast("Success!", {
+          description: "Payroll processed successfully!",
+          action: {
+            label: "View Details",
+            onClick: () => router.push("/dashboard/payroll-results"),
+          },
+        })
+    },
+    onError: (e) => {
+      toast("Payroll processing unsuccessful: " + e.message)
+    }
+  })
+
+  const {user, isLoaded} = useUser();
+
+  const handleEmployeeSelection = (employeeId: number) => {
     setSelectedEmployees((prev) =>
-      checked ? [...prev, employeeId] : prev.filter((id) => id !== employeeId)
+      prev.indexOf(employeeId) === -1 ? [...prev, employeeId] : prev.filter((id) => id !== employeeId)
     );
   };
 
@@ -128,10 +153,26 @@ export default function PayrollPage() {
     }
   };
 
-  const processPayroll = async () => {
-    setIsProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsProcessing(false);
+  const handleProcessPayroll = async () => {
+    const month = months.indexOf(selectedMonth) + 1
+    const twoDigitMonth = month > 9 ? month : `0${month}`
+    
+    const payrollDataReq = {
+      employee_ids: selectedEmployees,
+      work_month: `${selectedYear}-${twoDigitMonth}-01`,
+      email: user?.emailAddresses[0]?.emailAddress,
+    }
+    
+    const reqBody = {
+      inputs: {
+        payrollDataReq: JSON.stringify(payrollDataReq)
+      },
+      response_mode: "blocking",
+      user: user?.fullName
+    }
+    
+    // console.log("reqBody",reqBody)
+    mutate(reqBody)
   };
 
   // const openEditDialog = (record: any) => {
@@ -153,7 +194,7 @@ export default function PayrollPage() {
     selectedEmployees.length > 0 &&
     selectedEmployees.length < workRecords.length;
 
-  if (isLoading) {
+  if (isLoading || !isLoaded) {
     return (
       <SidebarInset>
         <header className="flex h-14 sm:h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -188,7 +229,7 @@ export default function PayrollPage() {
                   <div className="h-6 w-32 bg-muted animate-pulse rounded" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {Array.from({ length: 3 }).map((_, i) => (
+                  {Array.from({ length: 4 }).map((_, i) => (
                     <div
                       key={i}
                       className="h-16 bg-muted animate-pulse rounded-lg"
@@ -203,8 +244,6 @@ export default function PayrollPage() {
       </SidebarInset>
     );
   }
-
-  // console.log("email:", user?.emailAddresses[0]?.emailAddress);
 
   return (
     <SidebarInset>
@@ -250,11 +289,11 @@ export default function PayrollPage() {
                     className="w-full"
                   >
                     <Button
-                      onClick={processPayroll}
+                      onClick={handleProcessPayroll}
                       disabled={
                         !selectedMonth ||
                         selectedEmployees.length === 0 ||
-                        isProcessing
+                        isPending
                       }
                       className="w-full"
                       size="sm"
@@ -269,7 +308,7 @@ export default function PayrollPage() {
                       > */}
                       <Play className="mr-2 h-4 w-4" />
                       {/* </motion.div> */}
-                      {isProcessing ? "Processing..." : "Process Payroll"}
+                      {isPending ? "Processing..." : "Process Payroll"}
                     </Button>
                   </motion.div>
                 </div>
@@ -348,6 +387,7 @@ export default function PayrollPage() {
                       size="sm"
                       onClick={handleSelectAll}
                       className="gap-2 bg-transparent"
+                      disabled={workRecords?.length === 0}
                     >
                       <motion.div
                         animate={{ rotate: isAllSelected ? 360 : 0 }}
@@ -391,6 +431,9 @@ export default function PayrollPage() {
                       transition={{ delay: index * 0.1 + 0.8, duration: 0.4 }}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
+                      onClick={()=>{
+                          handleEmployeeSelection(record.employee_id)
+                      }}
                     >
                       <motion.div
                         animate={{
@@ -409,12 +452,6 @@ export default function PayrollPage() {
                           checked={selectedEmployees.includes(
                             record.employee_id
                           )}
-                          onCheckedChange={(checked) =>
-                            handleEmployeeSelection(
-                              record.employee_id,
-                              checked as boolean
-                            )
-                          }
                         />
                       </motion.div>
                       <div className="flex-1 min-w-0">
@@ -445,6 +482,7 @@ export default function PayrollPage() {
                       )}
                     </motion.div>
                   ))}
+                  {workRecords?.length === 0 ? <p className="text-sm text-muted-foreground">No employees to select</p> : ""}
                 </div>
               </motion.div>
             </CardContent>
@@ -529,7 +567,7 @@ export default function PayrollPage() {
               </div>
 
               {/* Desktop table */}
-              <div className="hidden sm:block overflow-x-auto">
+              {workRecords?.length !== 0 ? (<div className="hidden sm:block overflow-x-auto">
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -571,7 +609,7 @@ export default function PayrollPage() {
                     </TableBody>
                   </Table>
                 </motion.div>
-              </div>
+              </div>) : <p className="text-sm text-muted-foreground">No work records found</p>}
             </CardContent>
           </Card>
         </motion.div>

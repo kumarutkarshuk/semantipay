@@ -9,6 +9,7 @@ export async function GET() {
     )) as Compliance[];
     return new Response(JSON.stringify(response));
   } catch (err) {
+    console.error(err)
     return new Response(JSON.stringify(err), {
       status: 500,
     });

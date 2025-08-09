@@ -43,13 +43,13 @@ const isLoading = false;
 export default function EmployeesPage() {
   // const [searchTerm, setSearchTerm] = useState("")
 
-  // const {
-  //   data: employees,
-  //   isLoading,
-  // } = useQuery<Employee[]>({
-  //   queryKey: ["employees"],
-  //   queryFn: fetchEmployees,
-  // });
+  const {
+    data: employees,
+    isLoading,
+  } = useQuery<Employee[]>({
+    queryKey: ["employees"],
+    queryFn: fetchEmployees,
+  });
 
   // const filteredEmployees = employees.filter(
   //   (employee) =>

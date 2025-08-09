@@ -37,10 +37,15 @@ export interface WorkRecord {
   overtime_hours: number;
 }
 
-export interface PayrollResult extends WorkRecord{
+export interface PayrollResult extends WorkRecord {
   gross_pay: number;
   deductions?: string;
   net_pay: number;
   status: "DONE" | "PENDING" | "VIOLATION" | "FAILED";
   violation_reason?: string;
+}
+
+export interface NextAPIRes {
+  status: string;
+  message: string;
 }

@@ -95,13 +95,13 @@ export default function PayrollPage() {
   // const [editingRecord, setEditingRecord] = useState<any>(null);
   const [editForm, setEditForm] = useState({ hourlyRate: "", hoursWorked: "" });
 
-  // const {
-  //   data: payrollResults,
-  //   isLoading,
-  // } = useQuery<PayrollResult[]>({
-  //   queryKey: ["payrollResults"],
-  //   queryFn: fetchPayrollResults,
-  // });
+  const {
+    data: payrollResults,
+    isLoading,
+  } = useQuery<PayrollResult[]>({
+    queryKey: ["payrollResults"],
+    queryFn: fetchPayrollResults,
+  });
 
   // const openEditDialog = (record: any) => {
   //   setEditingRecord(record);
@@ -149,7 +149,6 @@ export default function PayrollPage() {
     );
   }
 
-  // console.log("email:", user?.emailAddresses[0]?.emailAddress);
 
   return (
     <SidebarInset>
