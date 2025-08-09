@@ -97,45 +97,32 @@ export function DashboardSkeleton() {
   );
 }
 
-export function PayrollTableSkeleton() {
+export function PayrollResultSkeleton() {
   return (
     <Card>
-      <CardHeader className="pb-4">
+      <CardHeader className="pb-6 sm:pb-10 gap-2">
         <Skeleton className="h-5 w-32" />
         <Skeleton className="h-4 w-64" />
       </CardHeader>
       <CardContent>
         {/* Mobile skeleton */}
-        <div className="space-y-4 sm:hidden">
+        <div className="space-y-4 sm:hidden w-full">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="border rounded-lg p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <Skeleton className="h-5 w-24" />
-                <Skeleton className="h-6 w-20" />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <Skeleton className="h-4 w-16" />
-                <Skeleton className="h-4 w-12" />
-                <Skeleton className="h-4 w-20" />
-                <Skeleton className="h-4 w-16" />
-              </div>
-              <Skeleton className="h-8 w-full" />
-            </div>
+            <Skeleton className="h-48 w-full" key={i}/>
           ))}
         </div>
-
         {/* Desktop skeleton */}
         <div className="hidden sm:block">
           <div className="space-y-3">
-            <div className="grid grid-cols-7 gap-4 pb-2">
-              {Array.from({ length: 7 }).map((_, i) => (
-                <Skeleton key={i} className="h-4 w-full" />
+            <div className="grid grid-cols-11 gap-4 pb-2">
+              {Array.from({ length: 11 }).map((_, i) => (
+                <Skeleton key={i} className="h-5 w-full" />
               ))}
             </div>
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="grid grid-cols-7 gap-4 py-2">
-                {Array.from({ length: 7 }).map((_, j) => (
-                  <Skeleton key={j} className="h-4 w-full" />
+              <div key={i} className="grid grid-cols-11 gap-4 py-2">
+                {Array.from({ length: 11 }).map((_, j) => (
+                  <Skeleton key={j} className="h-4 w-[80%]" />
                 ))}
               </div>
             ))}
@@ -148,63 +135,105 @@ export function PayrollTableSkeleton() {
 
 export function EmployeeTableSkeleton() {
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <Skeleton className="h-6 w-40 mb-2" />
-          </div>
+    <>
+    {/* Mobile skeleton */}
+        <div className="space-y-4 sm:hidden mx-auto">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton className="h-36 w-full" key={i}/>
+          ))}
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          <div className="grid grid-cols-5 gap-4 pb-2">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} className="h-4 w-full" />
+    <Card className="hidden sm:block">
+      <CardHeader className="pb-3 sm:pb-6">
+          <Skeleton className="h-5 w-48" />
+        </CardHeader>
+      <CardContent className="mt-4">
+        <div>
+          <div className="space-y-3">
+            <div className="grid grid-cols-6 gap-4 pb-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-5 w-[80%]" />
+              ))}
+            </div>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="grid grid-cols-6 gap-4 py-2">
+                {Array.from({ length: 6 }).map((_, j) => (
+                  <Skeleton key={j} className="h-4 w-[50%]" />
+                ))}
+              </div>
             ))}
           </div>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="grid grid-cols-5 gap-4 py-3">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-4 w-12" />
-              <Skeleton className="h-5 w-16" />
-            </div>
-          ))}
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }
 
 export function ComplianceTableSkeleton() {
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <Skeleton className="h-6 w-40 mb-2" />
-          </div>
+    <>
+    {/* Mobile skeleton */}
+        <div className="space-y-4 sm:hidden mx-auto">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton className="h-36 w-full" key={i}/>
+          ))}
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          <div className="grid grid-cols-6 gap-4 pb-2">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-4 w-full" />
+    <Card className="hidden sm:block">
+      <CardHeader className="pb-3">
+          <Skeleton className="h-5 w-48" />
+        </CardHeader>
+      <CardContent className="mt-4">
+        <div>
+          <div className="space-y-3">
+            <div className="grid grid-cols-6 gap-4 pb-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-5 w-[80%]" />
+              ))}
+            </div>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="grid grid-cols-6 gap-4 py-2">
+                {Array.from({ length: 6 }).map((_, j) => (
+                  <Skeleton key={j} className="h-4 w-[50%]" />
+                ))}
+              </div>
             ))}
           </div>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="grid grid-cols-6 gap-4 py-3">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-5 w-24" />
-              <Skeleton className="h-5 w-24" />
-            </div>
+        </div>
+      </CardContent>
+    </Card>
+    </>
+  );
+}
+
+export function PayrollSkeleton() {
+  return (
+    <Card>
+      <CardHeader className="pb-6 sm:pb-10 gap-2">
+        <Skeleton className="h-5 w-32" />
+      </CardHeader>
+      <CardContent>
+        {/* Mobile skeleton */}
+        <div className="space-y-4 sm:hidden w-full">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <Skeleton className="h-48 w-full" key={i}/>
           ))}
+        </div>
+        {/* Desktop skeleton */}
+        <div className="hidden sm:block">
+          <div className="space-y-3">
+            <div className="grid grid-cols-6 gap-4 pb-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-5 w-[80%]" />
+              ))}
+            </div>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="grid grid-cols-6 gap-4 py-2">
+                {Array.from({ length: 6 }).map((_, j) => (
+                  <Skeleton key={j} className="h-4 w-[50%]" />
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </CardContent>
     </Card>

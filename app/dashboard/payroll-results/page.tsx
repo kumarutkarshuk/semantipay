@@ -42,7 +42,7 @@ import {
 } from "@/components/ui/dialog";
 import { AlertTriangle, Play, Edit, Users, UserCheck } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { PayrollTableSkeleton } from "@/components/loading-skeletons";
+import { PayrollResultSkeleton } from "@/components/loading-skeletons";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { Employee, PayrollResult } from "@/lib/types";
@@ -61,8 +61,8 @@ const payrollResults: PayrollResult[] = [
     hours_worked: 160.0,
     overtime_hours: 10.0,
     gross_pay: 3400.0,
-    deductions: '{"PF": 400}',
-    net_pay: 3000.0,
+    deductions: '{"PF": 400, "ESI": 100}',
+    net_pay: 2900.0,
     status: "DONE",
     violation_reason: undefined,
   },
@@ -143,37 +143,7 @@ export default function PayrollPage() {
           </div>
         </header>
         <div className="flex-1 space-y-4 sm:space-y-6 p-4 sm:p-6">
-          <Card>
-            <CardHeader className="pb-4 flex flex-row justify-between">
-              <div>
-                <div className="h-5 w-40 bg-muted animate-pulse rounded mb-2" />
-                <div className="h-4 w-64 bg-muted animate-pulse rounded" />
-              </div>
-              <div className="h-9 w-[25%] bg-muted animate-pulse rounded" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Array.from({ length: 2 }).map((_, i) => (
-                  <div key={i} className="space-y-2">
-                    <div className="h-4 w-16 bg-muted animate-pulse rounded" />
-                    <div className="h-9 w-full bg-muted animate-pulse rounded" />
-                  </div>
-                ))}
-              </div>
-              <div className="space-y-3">
-                <div className="h-4 w-32 bg-muted animate-pulse rounded" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-16 bg-muted animate-pulse rounded-lg"
-                    />
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <PayrollTableSkeleton />
+          <PayrollResultSkeleton />
         </div>
       </SidebarInset>
     );
@@ -215,7 +185,7 @@ export default function PayrollPage() {
             </CardHeader>
             <CardContent>
               {/* Mobile-friendly table */}
-              {/* <div className="space-y-4 sm:hidden">
+              <div className="space-y-4 sm:hidden">
                 {payrollResults?.map((result, index) => (
                   <motion.div
                     key={result.record_id}
@@ -237,7 +207,7 @@ export default function PayrollPage() {
                           damping: 30,
                         }}
                       >
-                        {result.violations ? (
+                        {result.violation_reason ? (
                           <Badge variant="destructive" className="gap-1">
                             <AlertTriangle className="h-3 w-3" />
                             Violation
@@ -253,24 +223,39 @@ export default function PayrollPage() {
                       animate={{ opacity: 1 }}
                       transition={{ delay: index * 0.1 + 1.5, duration: 0.4 }}
                     >
+                      <span className="text-muted-foreground">Code:</span>
+                      <div>{result.employee_code}</div>
+                      <span className="text-muted-foreground">Currency:</span>
+                      <div>{getCurrency(result.country_code)}</div>
+                      <span className="text-muted-foreground">Hourly Rate:</span>
+                      <div>{result.hourly_rate}</div>
+                      <span className="text-muted-foreground">Hrs:</span>
+                      <div>{result.hours_worked}</div>
+                      <span className="text-muted-foreground">
+                        Overtime Hrs:
+                      </span>
+                      <div>{result.overtime_hours}</div>
+                      <span className="text-muted-foreground">Gross:</span>
+                      <div>{result.gross_pay}</div>
+                      <span className="text-muted-foreground">Net:</span>
+                      <div>{result.net_pay}</div>
+                      <span className="text-muted-foreground">Deductions:</span>
                       <div>
-                        <span className="text-muted-foreground">Hours:</span>
-                        {result.hoursWorked}
+                        {Object.entries(
+                          JSON.parse(result.deductions || "{}")
+                        ).map((d) => {
+                          const [key, value] = d;
+                          return (
+                            <div key={key}>
+                              {key}: {value as number}
+                            </div>
+                          );
+                        })}
                       </div>
-                      <div>
-                        <span className="text-muted-foreground">Rate:</span> $
-                        {result.hourlyRate}
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Gross:</span> $
-                        {recorresultd.grossPay.toLocaleString()}
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Net:</span> $
-                        {resultresult.netPay.toLocaleString()}
-                      </div>
+                      <span className="text-muted-foreground">Violation:</span>
+                      <div>{`${result.violation_reason || "-"}`}</div>
                     </motion.div>
-                    {record.violations && (
+                    {/* {result.violation_reason && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -342,10 +327,10 @@ export default function PayrollPage() {
                           </DialogContent>
                         </Dialog>
                       </motion.div>
-                    )}
+                    )} */}
                   </motion.div>
                 ))}
-              </div> */}
+              </div>
 
               {/* Desktop table */}
               <div className="hidden sm:block overflow-x-auto">
@@ -359,6 +344,7 @@ export default function PayrollPage() {
                       <TableRow>
                         <TableHead>Employee Code</TableHead>
                         <TableHead>Name</TableHead>
+                        <TableHead>Currency</TableHead>
                         <TableHead>Hourly Rate</TableHead>
                         <TableHead>Hours Worked</TableHead>
                         <TableHead>Overtime Hours</TableHead>
@@ -386,14 +372,24 @@ export default function PayrollPage() {
                             {result.employee_code}
                           </TableCell>
                           <TableCell>{result.name}</TableCell>
-                          <TableCell>{`${result.hourly_rate} (${getCurrency(
-                            result.country_code
-                          )})`}</TableCell>
+                          <TableCell>{getCurrency(result.country_code)}</TableCell>
+                          <TableCell>{result.hourly_rate}</TableCell>
                           <TableCell>{result.hours_worked}</TableCell>
                           <TableCell>{result.overtime_hours}</TableCell>
                           <TableCell>{result.gross_pay}</TableCell>
                           <TableCell>{result.net_pay}</TableCell>
-                          <TableCell>{result.deductions}</TableCell>
+                          <TableCell className="flex flex-col gap-2">
+                            {Object.entries(
+                              JSON.parse(result.deductions || "{}")
+                            ).map((d) => {
+                              const [key, value] = d;
+                              return (
+                                <div key={key}>
+                                  {key}: {value as number}
+                                </div>
+                              );
+                            })}
+                          </TableCell>
                           <TableCell>
                             <motion.div
                               initial={{ scale: 0 }}

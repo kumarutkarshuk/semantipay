@@ -42,7 +42,7 @@ import {
 } from "@/components/ui/dialog";
 import { AlertTriangle, Play, Edit, Users, UserCheck } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { PayrollTableSkeleton } from "@/components/loading-skeletons";
+import { PayrollSkeleton } from "@/components/loading-skeletons";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { Employee, WorkRecord } from "@/lib/types";
@@ -57,10 +57,10 @@ const workRecords: WorkRecord[] = [
     employee_code: "EMP001",
     country_code: "IN",
     record_id: 1,
-    hourly_rate: 500.00,
+    hourly_rate: 500.0,
     work_month: "2025-07-01",
-    hours_worked: 160.00,
-    overtime_hours: 10.00,
+    hours_worked: 160.0,
+    overtime_hours: 10.0,
   },
   {
     employee_id: 1,
@@ -68,37 +68,37 @@ const workRecords: WorkRecord[] = [
     employee_code: "EMP001",
     country_code: "AE",
     record_id: 2,
-    hourly_rate: 1000.00,
+    hourly_rate: 1000.0,
     work_month: "2025-07-01",
-    hours_worked: 100.00,
-    overtime_hours: 5.00,
-  }
-]
-
-const months = [
-  // "January",
-  // "February",
-  // "March",
-  // "April",
-  // "May",
-  // "June",
-  "July",
-  // "August",
-  // "September",
-  // "October",
-  // "November",
-  // "December",
+    hours_worked: 100.0,
+    overtime_hours: 5.0,
+  },
 ];
 
-const isLoading = false
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const isLoading = false;
 
 export default function PayrollPage() {
   const [selectedEmployees, setSelectedEmployees] = useState<number[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string>("July");
   const [selectedYear, setSelectedYear] = useState<string>("2025");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<any>(null);
-  const [editForm, setEditForm] = useState({ hourlyRate: "", hoursWorked: "" });
+  // const [editingRecord, setEditingRecord] = useState<any>(null);
+  // const [editForm, setEditForm] = useState({ hourlyRate: "", hoursWorked: "" });
 
   // const {
   //   data: workRecords,
@@ -115,8 +115,11 @@ export default function PayrollPage() {
   };
 
   const handleSelectAll = () => {
-    const allEmployeeIds = workRecords ? workRecords.map((w) => w.employee_id) : [];
-    const isAllSelected = workRecords && selectedEmployees.length === workRecords.length;
+    const allEmployeeIds = workRecords
+      ? workRecords.map((w) => w.employee_id)
+      : [];
+    const isAllSelected =
+      workRecords && selectedEmployees.length === workRecords.length;
 
     if (isAllSelected) {
       setSelectedEmployees([]);
@@ -131,21 +134,24 @@ export default function PayrollPage() {
     setIsProcessing(false);
   };
 
-  const openEditDialog = (record: any) => {
-    setEditingRecord(record);
-    setEditForm({
-      hourlyRate: record.hourlyRate.toString(),
-      hoursWorked: record.hoursWorked.toString(),
-    });
-  };
-
-  // const saveChanges = () => {
-    
+  // const openEditDialog = (record: any) => {
+  //   setEditingRecord(record);
+  //   setEditForm({
+  //     hourlyRate: record.hourlyRate.toString(),
+  //     hoursWorked: record.hoursWorked.toString(),
+  //   });
   // };
 
-  const isAllSelected = workRecords && selectedEmployees.length === workRecords.length;
+  // const saveChanges = () => {
+
+  // };
+
+  const isAllSelected =
+    workRecords && selectedEmployees.length === workRecords.length;
   const isPartialSelected =
-    workRecords && selectedEmployees.length > 0 && selectedEmployees.length < workRecords.length;
+    workRecords &&
+    selectedEmployees.length > 0 &&
+    selectedEmployees.length < workRecords.length;
 
   if (isLoading) {
     return (
@@ -160,12 +166,12 @@ export default function PayrollPage() {
         </header>
         <div className="flex-1 space-y-4 sm:space-y-6 p-4 sm:p-6">
           <Card>
-            <CardHeader className="pb-4 flex flex-row justify-between">
+            <CardHeader className="pb-4 flex sm:justify-between flex-col sm:flex-row gap-2 sm:gap-0">
               <div>
                 <div className="h-5 w-40 bg-muted animate-pulse rounded mb-2" />
                 <div className="h-4 w-64 bg-muted animate-pulse rounded" />
               </div>
-              <div className="h-9 w-[25%] bg-muted animate-pulse rounded" />
+              <div className="h-9 sm:w-[25%] bg-muted animate-pulse rounded" />
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -177,9 +183,12 @@ export default function PayrollPage() {
                 ))}
               </div>
               <div className="space-y-3">
-                <div className="h-4 w-32 bg-muted animate-pulse rounded" />
+                <div className="flex justify-between items-center">
+                  <div className="h-4 w-32 bg-muted animate-pulse rounded" />
+                  <div className="h-6 w-32 bg-muted animate-pulse rounded" />
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {Array.from({ length: 4 }).map((_, i) => (
+                  {Array.from({ length: 3 }).map((_, i) => (
                     <div
                       key={i}
                       className="h-16 bg-muted animate-pulse rounded-lg"
@@ -189,7 +198,7 @@ export default function PayrollPage() {
               </div>
             </CardContent>
           </Card>
-          <PayrollTableSkeleton />
+          <PayrollSkeleton />
         </div>
       </SidebarInset>
     );
@@ -366,8 +375,8 @@ export default function PayrollPage() {
                     className="bg-primary/10 border border-primary/20 rounded-lg p-3"
                   >
                     <p className="text-sm text-primary font-medium">
-                      {selectedEmployees.length} of {workRecords?.length} employees
-                      selected
+                      {selectedEmployees.length} of {workRecords?.length}{" "}
+                      employees selected
                     </p>
                   </motion.div>
                 )}
@@ -397,7 +406,9 @@ export default function PayrollPage() {
                       >
                         <Checkbox
                           id={String(record.employee_id)}
-                          checked={selectedEmployees.includes(record.employee_id)}
+                          checked={selectedEmployees.includes(
+                            record.employee_id
+                          )}
                           onCheckedChange={(checked) =>
                             handleEmployeeSelection(
                               record.employee_id,
@@ -478,8 +489,7 @@ export default function PayrollPage() {
                           stiffness: 500,
                           damping: 30,
                         }}
-                      >
-                      </motion.div>
+                      ></motion.div>
                     </div>
                     <motion.div
                       className="grid grid-cols-2 gap-2 text-sm"
@@ -488,23 +498,29 @@ export default function PayrollPage() {
                       transition={{ delay: index * 0.1 + 1.5, duration: 0.4 }}
                     >
                       <div>
-                        <span className="text-muted-foreground">Employee Code:</span>
+                        <span className="text-muted-foreground">Code:</span>
                         {record.employee_code}
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Name:</span> 
-                        {record.name}
+                        <span className="text-muted-foreground">Currency:</span>
+                        {getCurrency(record.country_code)}
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Hourly Rate:</span> 
-                        {`${record.hourly_rate} (${getCurrency(record.country_code)})`}
+                        <span className="text-muted-foreground">
+                          Hourly Rate:
+                        </span>
+                        {record.hourly_rate}
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Hours Worked:</span>
+                        <span className="text-muted-foreground">
+                          Hours Worked:
+                        </span>
                         {record.hours_worked}
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Overtime Hours:</span>
+                        <span className="text-muted-foreground">
+                          Overtime Hours:
+                        </span>
                         {record.overtime_hours}
                       </div>
                     </motion.div>
@@ -545,13 +561,11 @@ export default function PayrollPage() {
                             {record.employee_code}
                           </TableCell>
                           <TableCell>{record.name}</TableCell>
-                          <TableCell>{`${record.hourly_rate} (${getCurrency(record.country_code)})`}</TableCell>
-                          <TableCell>
-                            {record.hours_worked}
-                          </TableCell>
-                          <TableCell>
-                            {record.overtime_hours}
-                          </TableCell>
+                          <TableCell>{`${record.hourly_rate} (${getCurrency(
+                            record.country_code
+                          )})`}</TableCell>
+                          <TableCell>{record.hours_worked}</TableCell>
+                          <TableCell>{record.overtime_hours}</TableCell>
                         </motion.tr>
                       ))}
                     </TableBody>

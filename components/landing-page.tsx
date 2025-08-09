@@ -171,7 +171,7 @@ export function LandingPage() {
                 transition={{ delay: 0.8 }}
               >
                 <Button asChild size="sm">
-                  <Link href="/dashboard">Dashboard</Link>
+                  <Link href="/dashboard/payroll">Dashboard</Link>
                 </Button>
               </motion.div>
             </div>
@@ -247,7 +247,7 @@ export function LandingPage() {
                   <Link href="/dashboard">Sign In</Link>
                 </Button> */}
                 <Button asChild className="w-full">
-                  <Link href="/dashboard">Dashboard</Link>
+                  <Link href="/dashboard/payroll">Dashboard</Link>
                 </Button>
               </motion.div>
             </div>
@@ -307,7 +307,7 @@ export function LandingPage() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Button asChild size="lg" className="w-full sm:w-auto">
-                  <Link href="/dashboard">
+                  <Link href="/dashboard/payroll">
                     Get Started
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -586,7 +586,7 @@ export function LandingPage() {
                 variant="secondary"
                 className="w-full sm:w-auto"
               >
-                <Link href="/dashboard">
+                <Link href="/dashboard/payroll">
                   Demo
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>

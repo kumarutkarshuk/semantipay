@@ -11,6 +11,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { SignedIn, UserButton, useSignIn } from "@clerk/nextjs";
 import {
@@ -60,6 +62,7 @@ const menuItems = [
 
 export function AppSidebar() {
   const { isLoaded } = useSignIn();
+  const {setOpenMobile} = useSidebar()
 
   return (
     <Sidebar className="border-r">
@@ -87,7 +90,7 @@ export function AppSidebar() {
                     asChild
                     className="w-full justify-start px-3 py-2 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
                   >
-                    <Link href={item.url} className="flex items-center gap-3">
+                    <Link href={item.url} className="flex items-center gap-3" onClick={() => setOpenMobile(false)}>
                       <item.icon className="h-4 w-4 flex-shrink-0" />
                       <span className="truncate">{item.title}</span>
                     </Link>

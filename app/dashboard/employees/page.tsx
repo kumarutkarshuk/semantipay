@@ -2,12 +2,7 @@
 
 import { motion } from "framer-motion";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -21,6 +16,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Employee } from "@/lib/types";
 import { EmployeeTableSkeleton } from "@/components/loading-skeletons";
 import { getCurrency } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { fetchEmployees } from "@/lib/next-api";
 
 const employees: Employee[] = [
   {
@@ -35,8 +32,8 @@ const employees: Employee[] = [
     employee_id: 2,
     name: "Jane Smith",
     employee_code: "EMP002",
-    country_code: "AED",
-    region: "North America",
+    country_code: "AE",
+    region: "Dubai",
     hourly_rate: 600,
   },
 ];
@@ -101,7 +98,52 @@ export default function EmployeesPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.6 }}
         >
-          <Card className="hover:shadow-md transition-shadow duration-300">
+          {/*Mobile cards*/}
+          <div className="space-y-4 sm:hidden">
+            {employees?.map((e, index) => (
+              <motion.div
+                key={e.employee_id}
+                className="border rounded-lg p-4 space-y-3 hover:shadow-sm transition-shadow"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 + 1.2, duration: 0.5 }}
+                whileHover={{ scale: 1.01 }}
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium">{e.name}</h3>
+                </div>
+                <motion.div
+                  className="grid grid-cols-2 gap-2 text-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: index * 0.1 + 1.5, duration: 0.4 }}
+                >
+                  <div>
+                    <span className="text-muted-foreground">Code:</span>
+                    {e.employee_code}
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Country Code:</span>
+                    {e.country_code}
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Currency:</span>
+                    {getCurrency(e.country_code)}
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Region:</span>
+                    {e.region}
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Hourly Rate:</span>
+                    {e.hourly_rate}
+                  </div>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
+          {/*Desktop card*/}
+          <Card className="hover:shadow-md transition-shadow duration-300 hidden sm:block">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <motion.div
@@ -159,6 +201,7 @@ export default function EmployeesPage() {
                       <TableHead>Name</TableHead>
                       <TableHead>Employee Code</TableHead>
                       <TableHead>Country Code</TableHead>
+                      <TableHead>Currency</TableHead>
                       <TableHead>Region</TableHead>
                       <TableHead>Hourly Rate</TableHead>
                     </TableRow>
@@ -175,8 +218,11 @@ export default function EmployeesPage() {
                         <TableCell>{employee.name}</TableCell>
                         <TableCell>{employee.employee_code}</TableCell>
                         <TableCell>{employee.country_code}</TableCell>
+                        <TableCell>
+                          {getCurrency(employee.country_code)}
+                        </TableCell>
                         <TableCell>{employee.region}</TableCell>
-                        <TableCell>{`${employee.hourly_rate}/hr (${getCurrency(employee.country_code)})`}</TableCell>
+                        <TableCell>{employee.hourly_rate}</TableCell>
                         {/* <TableCell>
                           <div className="flex items-center gap-2">
                             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>

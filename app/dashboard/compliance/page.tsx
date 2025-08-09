@@ -20,6 +20,9 @@ import { Separator } from "@/components/ui/separator";
 import { ComplianceTableSkeleton } from "@/components/loading-skeletons";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Compliance } from "@/lib/types";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCompliance } from "@/lib/next-api";
+import { getCurrency } from "@/lib/utils";
 
 const compliance: Compliance[] = [
   {
@@ -95,7 +98,52 @@ export default function CompliancePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.6 }}
         >
-          <Card className="hover:shadow-md transition-shadow duration-300">
+          {/*Mobile cards*/}
+                    <div className="space-y-4 sm:hidden">
+                      {compliance?.map((c, index) => (
+                        <motion.div
+                          key={c.rule_id}
+                          className="border rounded-lg p-4 space-y-3 hover:shadow-sm transition-shadow"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 + 1.2, duration: 0.5 }}
+                          whileHover={{ scale: 1.01 }}
+                        >
+                          <div className="flex items-center justify-between">
+                            <h3 className="font-medium">{c.rule_name}</h3>
+                          </div>
+                          <motion.div
+                            className="grid grid-cols-2 gap-2 text-sm"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: index * 0.1 + 1.5, duration: 0.4 }}
+                          >
+                              <span className="text-muted-foreground">Country Code:</span>
+                            <div>
+                              {c.country_code}
+                            </div>
+                              <span className="text-muted-foreground">Region:</span>
+                            <div>
+                              {c.region || "-"}
+                            </div>
+                              <span className="text-muted-foreground">Effective Date:</span>
+                            <div>
+                              {c.effective_date}
+                            </div>
+                              <span className="text-muted-foreground">Threshold Value:</span>
+                            <div>
+                              {`${c.threshold_value} (${getCurrency(c.country_code)})`}
+                            </div>
+                              <span className="text-muted-foreground">Description:</span>
+                            <div>
+                              {c.description}
+                            </div>
+                          </motion.div>
+                        </motion.div>
+                      ))}
+                    </div>
+          {/*Desktop card*/}
+          <Card className="hover:shadow-md transition-shadow duration-300 hidden sm:block">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <motion.div
@@ -143,7 +191,7 @@ export default function CompliancePage() {
                         <TableCell>
                           {c.effective_date}
                         </TableCell>
-                        <TableCell>{c.threshold_value}</TableCell>
+                        <TableCell>{`${c.threshold_value} (${getCurrency(c.country_code)})`}</TableCell>
                         {/* <TableCell>{c.formula}</TableCell> */}
                       </motion.tr>
                     ))}
