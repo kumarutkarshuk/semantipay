@@ -47,7 +47,7 @@ import { useUser } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Employee, WorkRecord } from "@/lib/types";
 import { fetchEmployees, fetchWorkRecords, processPayroll } from "@/lib/next-api";
-import { getCurrency } from "@/lib/utils";
+import { getCurrency, getDateFromSelectedMonthYear, months } from "@/lib/utils";
 import { toast } from "sonner"
 import { useRouter } from "next/navigation";
 
@@ -77,26 +77,11 @@ const workRecords: WorkRecord[] = [
   },
 ];
 
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 const isLoading = false;
 
 export default function PayrollPage() {
   const [selectedEmployees, setSelectedEmployees] = useState<number[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<string>("July");
+  const [selectedMonth, setSelectedMonth] = useState<string>("6");
   const [selectedYear, setSelectedYear] = useState<string>("2025");
   // const [isProcessing, setIsProcessing] = useState(false);
   // const [editingRecord, setEditingRecord] = useState<any>(null);
@@ -109,8 +94,10 @@ export default function PayrollPage() {
     data: workRecords,
     isLoading,
   } = useQuery<WorkRecord[]>({
-    queryKey: ["workRecords"],
-    queryFn: fetchWorkRecords,
+    queryKey: ["workRecords", selectedMonth, selectedYear],
+    queryFn: async () => {
+      return await fetchWorkRecords({work_month: getDateFromSelectedMonthYear(selectedMonth, selectedYear)})
+    },
   });
 
   const {mutate, isPending} = useMutation({
@@ -154,12 +141,9 @@ export default function PayrollPage() {
   };
 
   const handleProcessPayroll = async () => {
-    const month = months.indexOf(selectedMonth) + 1
-    const twoDigitMonth = month > 9 ? month : `0${month}`
-    
     const payrollDataReq = {
       employee_ids: selectedEmployees,
-      work_month: `${selectedYear}-${twoDigitMonth}-01`,
+      work_month: getDateFromSelectedMonthYear(selectedMonth, selectedYear),
       email: user?.emailAddresses[0]?.emailAddress,
     }
     
@@ -172,6 +156,7 @@ export default function PayrollPage() {
     }
     
     // console.log("reqBody",reqBody)
+    setSelectedEmployees([])
     mutate(reqBody)
   };
 
@@ -333,8 +318,8 @@ export default function PayrollPage() {
                         <SelectValue placeholder="Select month" />
                       </SelectTrigger>
                       <SelectContent>
-                        {months.map((month) => (
-                          <SelectItem key={month} value={month}>
+                        {months.map((month, index) => (
+                          <SelectItem key={index} value={String(index)}>
                             {month}
                           </SelectItem>
                         ))}

@@ -23,9 +23,19 @@ export async function fetchCompliance(): Promise<Compliance[]> {
   return response.json();
 }
 
-export async function fetchWorkRecords(): Promise<WorkRecord[]> {
+export async function fetchWorkRecords(request: Object): Promise<WorkRecord[]> {
   const baseUrl = getBaseUrl();
-  const response = await fetch(`${baseUrl}/api/work-records`);
+  const response = await fetch(
+    `${baseUrl}/api/work-records`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request)
+    },
+    
+  );
 
   if (!response.ok) {
     throw new Error("failed to fetch work records");
