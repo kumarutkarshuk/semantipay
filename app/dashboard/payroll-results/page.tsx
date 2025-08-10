@@ -95,10 +95,7 @@ export default function PayrollPage() {
   // const [editingRecord, setEditingRecord] = useState<any>(null);
   const [editForm, setEditForm] = useState({ hourlyRate: "", hoursWorked: "" });
 
-  const {
-    data: payrollResults,
-    isLoading,
-  } = useQuery<PayrollResult[]>({
+  const { data: payrollResults, isLoading } = useQuery<PayrollResult[]>({
     queryKey: ["payrollResults"],
     queryFn: fetchPayrollResults,
   });
@@ -148,7 +145,6 @@ export default function PayrollPage() {
       </SidebarInset>
     );
   }
-
 
   return (
     <SidebarInset>
@@ -226,7 +222,9 @@ export default function PayrollPage() {
                       <div>{result.employee_code}</div>
                       <span className="text-muted-foreground">Currency:</span>
                       <div>{getCurrency(result.country_code)}</div>
-                      <span className="text-muted-foreground">Hourly Rate:</span>
+                      <span className="text-muted-foreground">
+                        Hourly Rate:
+                      </span>
                       <div>{result.hourly_rate}</div>
                       <span className="text-muted-foreground">Hrs:</span>
                       <div>{result.hours_worked}</div>
@@ -240,16 +238,19 @@ export default function PayrollPage() {
                       <div>{result.net_pay}</div>
                       <span className="text-muted-foreground">Deductions:</span>
                       <div>
-                        {Object.entries(
-                          JSON.parse(result.deductions || "{}")
-                        ).map((d) => {
-                          const [key, value] = d;
-                          return (
-                            <div key={key}>
-                              {key}: {value as number}
-                            </div>
-                          );
-                        })}
+                        {Object.values(JSON.parse(result.deductions || "{}"))
+                          .length === 0
+                          ? "-"
+                          : Object.entries(
+                              JSON.parse(result.deductions || "{}")
+                            ).map((d) => {
+                              const [key, value] = d;
+                              return (
+                                <div key={key}>
+                                  {key}: {value as number}
+                                </div>
+                              );
+                            })}
                       </div>
                       <span className="text-muted-foreground">Violation:</span>
                       <div>{`${result.violation_reason || "-"}`}</div>
@@ -371,23 +372,29 @@ export default function PayrollPage() {
                             {result.employee_code}
                           </TableCell>
                           <TableCell>{result.name}</TableCell>
-                          <TableCell>{getCurrency(result.country_code)}</TableCell>
+                          <TableCell>
+                            {getCurrency(result.country_code)}
+                          </TableCell>
                           <TableCell>{result.hourly_rate}</TableCell>
                           <TableCell>{result.hours_worked}</TableCell>
                           <TableCell>{result.overtime_hours}</TableCell>
                           <TableCell>{result.gross_pay}</TableCell>
                           <TableCell>{result.net_pay}</TableCell>
                           <TableCell className="flex flex-col gap-2">
-                            {Object.entries(
+                            {Object.values(
                               JSON.parse(result.deductions || "{}")
-                            ).map((d) => {
-                              const [key, value] = d;
-                              return (
-                                <div key={key}>
-                                  {key}: {value as number}
-                                </div>
-                              );
-                            })}
+                            ).length === 0
+                              ? "-"
+                              : Object.entries(
+                                  JSON.parse(result.deductions || "{}")
+                                ).map((d) => {
+                                  const [key, value] = d;
+                                  return (
+                                    <div key={key}>
+                                      {key}: {value as number}
+                                    </div>
+                                  );
+                                })}
                           </TableCell>
                           <TableCell>
                             <motion.div
