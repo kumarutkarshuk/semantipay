@@ -48,6 +48,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Employee, PayrollResult } from "@/lib/types";
 import { fetchEmployees, fetchPayrollResults } from "@/lib/next-api";
 import { getCurrency } from "@/lib/utils";
+import RectifyPayrollViolation from "@/components/rectify-payroll-violation";
 
 const payrollResults: PayrollResult[] = [
   {
@@ -90,43 +91,11 @@ export default function PayrollPage() {
   const [selectedEmployees, setSelectedEmployees] = useState<number[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string>("July");
   const [selectedYear, setSelectedYear] = useState<string>("2025");
-  // const [payrollData, setPayrollData] = useState(mockPayrollResults);
-  const [isProcessing, setIsProcessing] = useState(false);
-  // const [editingRecord, setEditingRecord] = useState<any>(null);
-  const [editForm, setEditForm] = useState({ hourlyRate: "", hoursWorked: "" });
 
   const { data: payrollResults, isLoading } = useQuery<PayrollResult[]>({
     queryKey: ["payrollResults"],
     queryFn: fetchPayrollResults,
   });
-
-  // const openEditDialog = (record: any) => {
-  //   setEditingRecord(record);
-  //   setEditForm({
-  //     hourlyRate: record.hourlyRate.toString(),
-  //     hoursWorked: record.hoursWorked.toString(),
-  //   });
-  // };
-
-  // const saveChanges = () => {
-  //   setPayrollData((prev) =>
-  //     prev.map((record) =>
-  //       record.id === editingRecord.id
-  //         ? {
-  //             ...record,
-  //             hourlyRate: Number.parseFloat(editForm.hourlyRate),
-  //             hoursWorked: Number.parseFloat(editForm.hoursWorked),
-  //             grossPay:
-  //               Number.parseFloat(editForm.hourlyRate) *
-  //               Number.parseFloat(editForm.hoursWorked),
-  //             violations: null,
-  //             status: "processed",
-  //           }
-  //         : record
-  //     )
-  //   );
-  //   setEditingRecord(null);
-  // };
 
   if (isLoading) {
     return (
@@ -255,79 +224,7 @@ export default function PayrollPage() {
                       <span className="text-muted-foreground">Violation:</span>
                       <div>{`${result.violation_reason || "-"}`}</div>
                     </motion.div>
-                    {/* {result.violation_reason && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 + 1.6, duration: 0.4 }}
-                      >
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <motion.div
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="w-full bg-transparent"
-                                onClick={() => openEditDialog(record)}
-                              >
-                                <Edit className="h-4 w-4 mr-1" />
-                                Rectify Violation
-                              </Button>
-                            </motion.div>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-md">
-                            <DialogHeader>
-                              <DialogTitle>
-                                Rectify Payroll Violation
-                              </DialogTitle>
-                              <DialogDescription>
-                                Violation: {record.violations}
-                              </DialogDescription>
-                            </DialogHeader>
-                            <div className="space-y-4">
-                              <div className="space-y-2">
-                                <Label htmlFor="hourlyRate">Hourly Rate</Label>
-                                <Input
-                                  id="hourlyRate"
-                                  type="number"
-                                  value={editForm.hourlyRate}
-                                  onChange={(e) =>
-                                    setEditForm((prev) => ({
-                                      ...prev,
-                                      hourlyRate: e.target.value,
-                                    }))
-                                  }
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <Label htmlFor="hoursWorked">
-                                  Hours Worked
-                                </Label>
-                                <Input
-                                  id="hoursWorked"
-                                  type="number"
-                                  value={editForm.hoursWorked}
-                                  onChange={(e) =>
-                                    setEditForm((prev) => ({
-                                      ...prev,
-                                      hoursWorked: e.target.value,
-                                    }))
-                                  }
-                                />
-                              </div>
-                            </div>
-                            <DialogFooter>
-                              <Button onClick={saveChanges} className="w-full">
-                                Save Changes
-                              </Button>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
-                      </motion.div>
-                    )} */}
+                    {result.violation_reason ? <RectifyPayrollViolation result={result}/> : "-"}
                   </motion.div>
                 ))}
               </div>
@@ -353,7 +250,7 @@ export default function PayrollPage() {
                         <TableHead>Deductions</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Violation Reason</TableHead>
-                        {/* <TableHead>Actions</TableHead> */}
+                        <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -420,76 +317,9 @@ export default function PayrollPage() {
                           <TableCell>
                             {result.violation_reason || "-"}
                           </TableCell>
-                          {/* <TableCell>
-                            {record.violations && (
-                              <Dialog>
-                                <DialogTrigger asChild>
-                                  <motion.div
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                  >
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => openEditDialog(record)}
-                                    >
-                                      <Edit className="h-4 w-4 mr-1" />
-                                      Rectify
-                                    </Button>
-                                  </motion.div>
-                                </DialogTrigger>
-                                <DialogContent>
-                                  <DialogHeader>
-                                    <DialogTitle>
-                                      Rectify Payroll Violation
-                                    </DialogTitle>
-                                    <DialogDescription>
-                                      Violation: {record.violations}
-                                    </DialogDescription>
-                                  </DialogHeader>
-                                  <div className="space-y-4">
-                                    <div className="space-y-2">
-                                      <Label htmlFor="hourlyRate">
-                                        Hourly Rate
-                                      </Label>
-                                      <Input
-                                        id="hourlyRate"
-                                        type="number"
-                                        value={editForm.hourlyRate}
-                                        onChange={(e) =>
-                                          setEditForm((prev) => ({
-                                            ...prev,
-                                            hourlyRate: e.target.value,
-                                          }))
-                                        }
-                                      />
-                                    </div>
-                                    <div className="space-y-2">
-                                      <Label htmlFor="hoursWorked">
-                                        Hours Worked
-                                      </Label>
-                                      <Input
-                                        id="hoursWorked"
-                                        type="number"
-                                        value={editForm.hoursWorked}
-                                        onChange={(e) =>
-                                          setEditForm((prev) => ({
-                                            ...prev,
-                                            hoursWorked: e.target.value,
-                                          }))
-                                        }
-                                      />
-                                    </div>
-                                  </div>
-                                  <DialogFooter>
-                                    <Button onClick={saveChanges}>
-                                      Save Changes
-                                    </Button>
-                                  </DialogFooter>
-                                </DialogContent>
-                              </Dialog>
-                            )}
-                          </TableCell> */}
+                          <TableCell>
+                            {result.violation_reason ? <RectifyPayrollViolation result={result}/> : "-"}
+                          </TableCell>
                         </motion.tr>
                       ))}
                     </TableBody>

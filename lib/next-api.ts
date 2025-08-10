@@ -77,6 +77,26 @@ export async function processPayroll(request: Object): Promise<NextAPIRes> {
   return response.json();
 }
 
+export async function rectifyViolation(request: Object): Promise<void> {
+  const baseUrl = getBaseUrl();
+  
+  const response = await fetch(
+    `${baseUrl}/api/rectify-violation`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request)
+    },
+    
+  );
+
+  if (!response.ok) {
+    throw new Error("failed to update records");
+  }
+}
+
 function getBaseUrl() {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!baseUrl) {

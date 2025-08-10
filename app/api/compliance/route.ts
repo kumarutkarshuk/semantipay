@@ -1,8 +1,16 @@
 import { callTiDBDataService } from "@/lib/tidb";
 import { Compliance, HttpMethod } from "@/lib/types";
+import {auth} from "@clerk/nextjs/server"
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
+    const {userId} = await auth()
+
+    if(!userId){
+      return NextResponse.json({error: "not authorized"}, {status: 401})
+    }
+
     const response: Compliance[] = (await callTiDBDataService(
       "/allCompliance",
       HttpMethod.GET

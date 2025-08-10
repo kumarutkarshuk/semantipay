@@ -100,7 +100,7 @@ export default function PayrollPage() {
     },
   });
 
-  const {mutate, isPending} = useMutation({
+  const {mutateAsync, isPending} = useMutation({
     mutationFn: processPayroll,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['workRecords'] })
@@ -156,8 +156,8 @@ export default function PayrollPage() {
     }
     
     // console.log("reqBody",reqBody)
+    await mutateAsync(reqBody)
     setSelectedEmployees([])
-    mutate(reqBody)
   };
 
   // const openEditDialog = (record: any) => {

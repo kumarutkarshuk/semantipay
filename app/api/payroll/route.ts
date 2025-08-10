@@ -1,5 +1,14 @@
+import { auth } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+
 export async function POST(request: Request) {
   try{
+    const {userId} = await auth()
+        
+    if(!userId){
+      return NextResponse.json({error: "not authorized"}, {status: 401})
+    }
+
     const DIFY_TOKEN = process.env.DIFY_TOKEN;
 
     if (!DIFY_TOKEN) {
