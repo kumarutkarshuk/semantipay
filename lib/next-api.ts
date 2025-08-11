@@ -97,6 +97,46 @@ export async function rectifyViolation(request: Object): Promise<void> {
   }
 }
 
+export async function flagIncorrectPayroll(request: Object): Promise<void> {
+  const baseUrl = getBaseUrl();
+  
+  const response = await fetch(
+    `${baseUrl}/api/flag-incorrect-payroll`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request)
+    },
+    
+  );
+
+  if (!response.ok) {
+    throw new Error("failed to flag incorrect payroll");
+  }
+}
+
+export async function addCompliance(request: Object): Promise<void> {
+  const baseUrl = getBaseUrl();
+  
+  const response = await fetch(
+    `${baseUrl}/api/add-compliance`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request)
+    },
+    
+  );
+
+  if (!response.ok) {
+    throw new Error("failed to add compliance rule");
+  }
+}
+
 function getBaseUrl() {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!baseUrl) {

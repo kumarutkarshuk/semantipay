@@ -49,6 +49,7 @@ import { Employee, PayrollResult } from "@/lib/types";
 import { fetchEmployees, fetchPayrollResults } from "@/lib/next-api";
 import { getCurrency } from "@/lib/utils";
 import RectifyPayrollViolation from "@/components/rectify-payroll-violation";
+import FlagIncorrectPayroll from "@/components/flag-incorrect-payroll";
 
 const payrollResults: PayrollResult[] = [
   {
@@ -66,6 +67,7 @@ const payrollResults: PayrollResult[] = [
     net_pay: 2900.0,
     status: "DONE",
     violation_reason: undefined,
+    is_flagged: "FALSE"
   },
   {
     employee_id: 2,
@@ -82,6 +84,7 @@ const payrollResults: PayrollResult[] = [
     net_pay: 3750.0,
     status: "DONE",
     violation_reason: "Hourly rate below minimum wage",
+    is_flagged: "TRUE"
   },
 ];
 
@@ -92,12 +95,14 @@ export default function PayrollPage() {
   const [selectedMonth, setSelectedMonth] = useState<string>("July");
   const [selectedYear, setSelectedYear] = useState<string>("2025");
 
+  const { user, isLoaded } = useUser();
+
   const { data: payrollResults, isLoading } = useQuery<PayrollResult[]>({
     queryKey: ["payrollResults"],
     queryFn: fetchPayrollResults,
   });
 
-  if (isLoading) {
+  if (isLoading || !isLoaded) {
     return (
       <SidebarInset>
         <header className="flex h-14 sm:h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -224,7 +229,15 @@ export default function PayrollPage() {
                       <span className="text-muted-foreground">Violation:</span>
                       <div>{`${result.violation_reason || "-"}`}</div>
                     </motion.div>
-                    {result.violation_reason ? <RectifyPayrollViolation result={result}/> : "-"}
+                    <div className="flex flex-col gap-2">
+                      {result.violation_reason && (
+                        <RectifyPayrollViolation result={result} />
+                      )}
+                      {result.is_flagged === "FALSE" && <FlagIncorrectPayroll
+                        userID={user?.id!}
+                        result={result}
+                      />}
+                    </div>
                   </motion.div>
                 ))}
               </div>
@@ -277,21 +290,23 @@ export default function PayrollPage() {
                           <TableCell>{result.overtime_hours}</TableCell>
                           <TableCell>{result.gross_pay}</TableCell>
                           <TableCell>{result.net_pay}</TableCell>
-                          <TableCell className="flex flex-col gap-2">
-                            {Object.values(
-                              JSON.parse(result.deductions || "{}")
-                            ).length === 0
-                              ? "-"
-                              : Object.entries(
-                                  JSON.parse(result.deductions || "{}")
-                                ).map((d) => {
-                                  const [key, value] = d;
-                                  return (
-                                    <div key={key}>
-                                      {key}: {value as number}
-                                    </div>
-                                  );
-                                })}
+                          <TableCell>
+                            <div className="flex flex-col gap-2">
+                              {Object.values(
+                                JSON.parse(result.deductions || "{}")
+                              ).length === 0
+                                ? "-"
+                                : Object.entries(
+                                    JSON.parse(result.deductions || "{}")
+                                  ).map((d) => {
+                                    const [key, value] = d;
+                                    return (
+                                      <div key={key}>
+                                        {key}: {value as number}
+                                      </div>
+                                    );
+                                  })}
+                            </div>
                           </TableCell>
                           <TableCell>
                             <motion.div
@@ -318,7 +333,15 @@ export default function PayrollPage() {
                             {result.violation_reason || "-"}
                           </TableCell>
                           <TableCell>
-                            {result.violation_reason ? <RectifyPayrollViolation result={result}/> : "-"}
+                            <div className="flex gap-2 w-full">
+                              {result.violation_reason && (
+                                <RectifyPayrollViolation result={result} />
+                              )}
+                              {result.is_flagged === "FALSE" && <FlagIncorrectPayroll
+                                userID={user?.id!}
+                                result={result}
+                              />}
+                            </div>
                           </TableCell>
                         </motion.tr>
                       ))}

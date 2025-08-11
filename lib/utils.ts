@@ -11,10 +11,40 @@ export function getCurrency(countryCode: string): string {
       return "INR";
     case "AE":
       return "AED";
+    case "US":
+      return "USD";
+    case "CA":
+      return "CAD";
+    case "GB":
+      return "GBP";
+    case "AU":
+      return "AUD";
+    case "DE":
+      return "EUR";
+    case "FR":
+      return "EUR";
+    case "SG":
+      return "SGD";
+    case "NZ":
+      return "NZD";
     default:
       return "";
   }
 }
+
+
+export const countries = [
+  { code: "IN", name: "India" },
+  { code: "AE", name: "United Arab Emirates" },
+  { code: "US", name: "United States" },
+  { code: "CA", name: "Canada" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "AU", name: "Australia" },
+  { code: "DE", name: "Germany" },
+  { code: "FR", name: "France" },
+  { code: "SG", name: "Singapore" },
+  { code: "NZ", name: "New Zealand" }
+];
 
 export const months = [
   "January",

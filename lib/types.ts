@@ -35,6 +35,7 @@ export interface WorkRecord {
   work_month: string; // check for date data type
   hours_worked: number;
   overtime_hours: number;
+  is_flagged: "TRUE" | "FALSE";
 }
 
 export interface PayrollResult extends WorkRecord {

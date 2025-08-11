@@ -3,7 +3,7 @@ import { HttpMethod } from "@/lib/types";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-export async function PUT(request: Request) {
+export async function POST(request: Request) {
   try {
     const { userId } = await auth();
 
@@ -12,8 +12,7 @@ export async function PUT(request: Request) {
     }
 
     const reqBody = await request.json();
-    // console.log("reqBody",reqBody)
-    await callTiDBDataService("/rectifyViolation", HttpMethod.PUT, reqBody);
+    await callTiDBDataService("/flagPayroll", HttpMethod.POST, reqBody);
     return new Response(null);
   } catch (err) {
     console.error(err);

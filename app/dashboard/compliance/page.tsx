@@ -2,12 +2,7 @@
 
 import { motion } from "framer-motion";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -23,6 +18,8 @@ import { Compliance } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCompliance } from "@/lib/next-api";
 import { getCurrency } from "@/lib/utils";
+import AddComplianceDialog from "@/components/add-compliance-dialog";
+import { useUser } from "@clerk/nextjs";
 
 const compliance: Compliance[] = [
   {
@@ -40,8 +37,9 @@ const compliance: Compliance[] = [
     country_code: "IN",
     region: "Maharashtra",
     rule_name: "Overtime Pay",
-    description: "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam",
-    effective_date:" 2023-02-01",
+    description:
+      "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam",
+    effective_date: " 2023-02-01",
     threshold_value: 200,
     formula: "hourly_rate * 1.5 * overtime_hours",
   },
@@ -50,15 +48,13 @@ const compliance: Compliance[] = [
 const isLoading = false;
 
 export default function CompliancePage() {
-  const {
-    data: compliance,
-    isLoading,
-  } = useQuery<Compliance[]>({
+  const { data: compliance, isLoading } = useQuery<Compliance[]>({
     queryKey: ["compliance"],
     queryFn: fetchCompliance,
   });
+  const {user, isLoaded} = useUser()
 
-  if (isLoading) {
+  if (isLoading || !isLoaded) {
     return (
       <SidebarInset>
         <header className="flex h-14 sm:h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -99,49 +95,43 @@ export default function CompliancePage() {
           transition={{ delay: 0.1, duration: 0.6 }}
         >
           {/*Mobile cards*/}
-                    <div className="space-y-4 sm:hidden">
-                      {compliance?.map((c, index) => (
-                        <motion.div
-                          key={c.rule_id}
-                          className="border rounded-lg p-4 space-y-3 hover:shadow-sm transition-shadow"
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1 + 1.2, duration: 0.5 }}
-                          whileHover={{ scale: 1.01 }}
-                        >
-                          <div className="flex items-center justify-between">
-                            <h3 className="font-medium">{c.rule_name}</h3>
-                          </div>
-                          <motion.div
-                            className="grid grid-cols-2 gap-2 text-sm"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: index * 0.1 + 1.5, duration: 0.4 }}
-                          >
-                              <span className="text-muted-foreground">Country Code:</span>
-                            <div>
-                              {c.country_code}
-                            </div>
-                              <span className="text-muted-foreground">Region:</span>
-                            <div>
-                              {c.region || "-"}
-                            </div>
-                              <span className="text-muted-foreground">Effective Date:</span>
-                            <div>
-                              {c.effective_date}
-                            </div>
-                              <span className="text-muted-foreground">Threshold Value:</span>
-                            <div>
-                              {`${c.threshold_value} (${getCurrency(c.country_code)})`}
-                            </div>
-                              <span className="text-muted-foreground">Description:</span>
-                            <div>
-                              {c.description}
-                            </div>
-                          </motion.div>
-                        </motion.div>
-                      ))}
-                    </div>
+          <div className="space-y-4 sm:hidden">
+            {compliance?.map((c, index) => (
+              <motion.div
+                key={c.rule_id}
+                className="border rounded-lg p-4 space-y-3 hover:shadow-sm transition-shadow"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 + 1.2, duration: 0.5 }}
+                whileHover={{ scale: 1.01 }}
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium">{c.rule_name}</h3>
+                </div>
+                <motion.div
+                  className="grid grid-cols-2 gap-2 text-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: index * 0.1 + 1.5, duration: 0.4 }}
+                >
+                  <span className="text-muted-foreground">Country Code:</span>
+                  <div>{c.country_code}</div>
+                  <span className="text-muted-foreground">Region:</span>
+                  <div>{c.region || "-"}</div>
+                  <span className="text-muted-foreground">Effective Date:</span>
+                  <div>{c.effective_date}</div>
+                  <span className="text-muted-foreground">
+                    Threshold Value:
+                  </span>
+                  <div>
+                    {`${c.threshold_value} (${getCurrency(c.country_code)})`}
+                  </div>
+                  <span className="text-muted-foreground">Description:</span>
+                  <div>{c.description}</div>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
           {/*Desktop card*/}
           <Card className="hover:shadow-md transition-shadow duration-300 hidden sm:block">
             <CardHeader>
@@ -151,10 +141,11 @@ export default function CompliancePage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
                 >
-                  <CardTitle className="text-base sm:text-lg">
-                    Compliance Rules
+                  <CardTitle className="text-base sm:text-lg w-full">
+                   Compliance Rules
                   </CardTitle>
                 </motion.div>
+                <AddComplianceDialog userID={user?.id!}/>
               </div>
             </CardHeader>
             <CardContent>
@@ -187,11 +178,13 @@ export default function CompliancePage() {
                         <TableCell>{c.country_code}</TableCell>
                         <TableCell>{c.region ? c.region : "-"}</TableCell>
                         <TableCell>{c.rule_name}</TableCell>
-                        <TableCell className="line-c">{c.description}</TableCell>
-                        <TableCell>
-                          {c.effective_date}
+                        <TableCell className="line-c">
+                          {c.description}
                         </TableCell>
-                        <TableCell>{`${c.threshold_value} (${getCurrency(c.country_code)})`}</TableCell>
+                        <TableCell>{c.effective_date}</TableCell>
+                        <TableCell>{`${c.threshold_value} (${getCurrency(
+                          c.country_code
+                        )})`}</TableCell>
                         {/* <TableCell>{c.formula}</TableCell> */}
                       </motion.tr>
                     ))}
