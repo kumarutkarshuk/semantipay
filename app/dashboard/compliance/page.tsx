@@ -18,7 +18,7 @@ import { Compliance } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCompliance } from "@/lib/next-api";
 import { getCurrency } from "@/lib/utils";
-import AddComplianceDialog from "@/components/add-compliance-dialog";
+import AddComplianceDialog from "@/components/forms/add-compliance-dialog";
 import { useUser } from "@clerk/nextjs";
 
 const compliance: Compliance[] = [
@@ -96,6 +96,7 @@ export default function CompliancePage() {
         >
           {/*Mobile cards*/}
           <div className="space-y-4 sm:hidden">
+            <AddComplianceDialog userID={user?.id!}/>
             {compliance?.map((c, index) => (
               <motion.div
                 key={c.rule_id}

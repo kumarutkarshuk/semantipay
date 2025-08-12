@@ -1,45 +1,55 @@
+import { isRateLimited } from "@/lib/rate-limiter";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  try{
-    const {userId} = await auth()
-        
-    if(!userId){
-      return NextResponse.json({error: "not authorized"}, {status: 401})
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: "not authorized" }, { status: 401 });
+    }
+
+    const success = await isRateLimited(userId);
+
+    if (!success) {
+      return NextResponse.json(
+        { error: "REACHED DAY LIMIT FOR PROCESSING PAYROLL!" },
+        { status: 429 }
+      );
     }
 
     const DIFY_TOKEN = process.env.DIFY_TOKEN;
 
     if (!DIFY_TOKEN) {
-        throw new Error("Missing DIFY credentials");
+      throw new Error("Missing DIFY credentials");
     }
 
-    const reqBody = await request.json()
+    const reqBody = await request.json();
     // console.log(reqBody)
-    const url = "https://api.dify.ai/v1/workflows/run"
+    const url = "https://api.dify.ai/v1/workflows/run";
 
     const res = await fetch(url, {
-    method: "POST",
-    headers: {
+      method: "POST",
+      headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${DIFY_TOKEN}`
-    },
-    body: JSON.stringify(reqBody)
-    })
+        Authorization: `Bearer ${DIFY_TOKEN}`,
+      },
+      body: JSON.stringify(reqBody),
+    });
 
     // TODO - handle error
-    const resJSON = await res.json()
+    const resJSON = await res.json();
     // console.log(resJSON)
 
     const nextAPIres = {
       status: "success",
-      message: "Payroll processed successfully!"
-    }
+      message: "Payroll processed successfully!",
+    };
 
     return new Response(JSON.stringify(nextAPIres));
-  }catch(err){
-    console.error(err)
+  } catch (err) {
+    console.error(err);
     return new Response(JSON.stringify(err), {
       status: 500,
     });

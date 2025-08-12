@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,10 +27,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../ui/select";
 import { countries } from "@/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Calendar } from "./ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Calendar } from "../ui/calendar";
 import { format } from "date-fns";
 
 const formSchema = z.object({
@@ -46,7 +46,7 @@ const formSchema = z.object({
     .nonempty({ message: "Rule type can't be empty!" }),
   description: z.string().nonempty({message: "Description can't be empty!"}),
   effective_date: z.date(),
-  threshold_value: z.coerce.number().max(9999999999.99).nullable(),
+  threshold_value: z.coerce.number().max(9999999999.99).default(0),
   formula: z.string().max(255).optional(),
 });
 
@@ -72,7 +72,7 @@ export default function AddComplianceDialog({
       rule_type: "",
       description: "",
       effective_date: new Date(),
-      threshold_value: null,
+      threshold_value: 0,
       formula: "",
     },
   });
@@ -128,7 +128,7 @@ export default function AddComplianceDialog({
                     </SelectTrigger>
                     <SelectContent>
                       {countries.map((c) => (
-                        <SelectItem value={c.code}>{c.name}</SelectItem>
+                        <SelectItem value={c.code} key={c.code}>{c.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -190,8 +190,8 @@ export default function AddComplianceDialog({
                           : "Pick a date"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
+                    <PopoverContent className="w-auto p-0 scale-90 sm:scale-100">
+                        <Calendar
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}

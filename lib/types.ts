@@ -50,3 +50,9 @@ export interface NextAPIRes {
   status: string;
   message: string;
 }
+
+export interface EmployeeSelect {
+  employee_id: number;
+  employee_code: string;
+  name: string;
+}

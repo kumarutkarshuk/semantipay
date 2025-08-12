@@ -46,10 +46,15 @@ import { PayrollSkeleton } from "@/components/loading-skeletons";
 import { useUser } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Employee, WorkRecord } from "@/lib/types";
-import { fetchEmployees, fetchWorkRecords, processPayroll } from "@/lib/next-api";
+import {
+  fetchEmployees,
+  fetchWorkRecords,
+  processPayroll,
+} from "@/lib/next-api";
 import { getCurrency, getDateFromSelectedMonthYear, months } from "@/lib/utils";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import AddWorkRecord from "@/components/forms/add-work-record";
 
 // Mock data
 const workRecords: WorkRecord[] = [
@@ -63,6 +68,7 @@ const workRecords: WorkRecord[] = [
     work_month: "2025-07-01",
     hours_worked: 160.0,
     overtime_hours: 10.0,
+    is_flagged: "FALSE",
   },
   {
     employee_id: 2,
@@ -74,6 +80,7 @@ const workRecords: WorkRecord[] = [
     work_month: "2025-07-01",
     hours_worked: 100.0,
     overtime_hours: 5.0,
+    is_flagged: "TRUE",
   },
 ];
 
@@ -84,45 +91,44 @@ export default function PayrollPage() {
   const [selectedMonth, setSelectedMonth] = useState<string>("6");
   const [selectedYear, setSelectedYear] = useState<string>("2025");
   // const [isProcessing, setIsProcessing] = useState(false);
-  // const [editingRecord, setEditingRecord] = useState<any>(null);
-  // const [editForm, setEditForm] = useState({ hourlyRate: "", hoursWorked: "" });
 
-  const queryClient = useQueryClient()
-  const router = useRouter()
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
-  const {
-    data: workRecords,
-    isLoading,
-  } = useQuery<WorkRecord[]>({
+  const { data: workRecords, isLoading } = useQuery<WorkRecord[]>({
     queryKey: ["workRecords", selectedMonth, selectedYear],
     queryFn: async () => {
-      return await fetchWorkRecords({work_month: getDateFromSelectedMonthYear(selectedMonth, selectedYear)})
+      return await fetchWorkRecords({
+        work_month: getDateFromSelectedMonthYear(selectedMonth, selectedYear),
+      });
     },
   });
 
-  const {mutateAsync, isPending} = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: processPayroll,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['workRecords'] })
-      await queryClient.invalidateQueries({ queryKey: ['payrollResults'] })
+      await queryClient.invalidateQueries({ queryKey: ["workRecords"] });
+      await queryClient.invalidateQueries({ queryKey: ["payrollResults"] });
       toast("Success!", {
-          description: "Payroll processed successfully!",
-          action: {
-            label: "View Details",
-            onClick: () => router.push("/dashboard/payroll-results"),
-          },
-        })
+        description: "Payroll processed successfully!",
+        action: {
+          label: "View Details",
+          onClick: () => router.push("/dashboard/payroll-results"),
+        },
+      });
     },
     onError: (e) => {
-      toast("Payroll processing unsuccessful: " + e.message)
-    }
-  })
+      toast("Payroll processing unsuccessful: " + e.message);
+    },
+  });
 
-  const {user, isLoaded} = useUser();
+  const { user, isLoaded } = useUser();
 
   const handleEmployeeSelection = (employeeId: number) => {
     setSelectedEmployees((prev) =>
-      prev.indexOf(employeeId) === -1 ? [...prev, employeeId] : prev.filter((id) => id !== employeeId)
+      prev.indexOf(employeeId) === -1
+        ? [...prev, employeeId]
+        : prev.filter((id) => id !== employeeId)
     );
   };
 
@@ -145,39 +151,27 @@ export default function PayrollPage() {
       employee_ids: selectedEmployees,
       work_month: getDateFromSelectedMonthYear(selectedMonth, selectedYear),
       email: user?.emailAddresses[0]?.emailAddress,
-    }
-    
+    };
+
     const reqBody = {
       inputs: {
-        payrollDataReq: JSON.stringify(payrollDataReq)
+        payrollDataReq: JSON.stringify(payrollDataReq),
       },
       response_mode: "blocking",
-      user: user?.fullName
-    }
-    
+      user: user?.fullName,
+    };
+
     // console.log("reqBody",reqBody)
-    await mutateAsync(reqBody)
-    setSelectedEmployees([])
+    await mutateAsync(reqBody);
+    setSelectedEmployees([]);
   };
-
-  // const openEditDialog = (record: any) => {
-  //   setEditingRecord(record);
-  //   setEditForm({
-  //     hourlyRate: record.hourlyRate.toString(),
-  //     hoursWorked: record.hoursWorked.toString(),
-  //   });
-  // };
-
-  // const saveChanges = () => {
-
-  // };
 
   const isAllSelected =
     workRecords && selectedEmployees.length === workRecords.length;
-  const isPartialSelected =
-    workRecords &&
-    selectedEmployees.length > 0 &&
-    selectedEmployees.length < workRecords.length;
+  // const isPartialSelected =
+  //   workRecords &&
+  //   selectedEmployees.length > 0 &&
+  //   selectedEmployees.length < workRecords.length;
 
   if (isLoading || !isLoaded) {
     return (
@@ -416,8 +410,8 @@ export default function PayrollPage() {
                       transition={{ delay: index * 0.1 + 0.8, duration: 0.4 }}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={()=>{
-                          handleEmployeeSelection(record.employee_id)
+                      onClick={() => {
+                        handleEmployeeSelection(record.employee_id);
                       }}
                     >
                       <motion.div
@@ -467,7 +461,13 @@ export default function PayrollPage() {
                       )}
                     </motion.div>
                   ))}
-                  {workRecords?.length === 0 ? <p className="text-sm text-muted-foreground">No employees to select</p> : ""}
+                  {workRecords?.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      No employees to select
+                    </p>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </motion.div>
             </CardContent>
@@ -482,12 +482,23 @@ export default function PayrollPage() {
         >
           <Card className="hover:shadow-md transition-shadow duration-300">
             <CardHeader className="pb-4">
-              <CardTitle className="text-base sm:text-lg">
-                Work Records
-              </CardTitle>
-              {/* <CardDescription className="text-sm">
+              <div className="flex justify-between items-center">
+                <div>
+                  <CardTitle className="text-base sm:text-lg">
+                    Work Records
+                  </CardTitle>
+                  {/* <CardDescription className="text-sm">
                 Review processed payroll and handle any violations
               </CardDescription> */}
+                </div>
+                <AddWorkRecord
+                  userID={user?.id!}
+                  workMonth={getDateFromSelectedMonthYear(
+                    selectedMonth,
+                    selectedYear
+                  )}
+                />
+              </div>
             </CardHeader>
             <CardContent>
               {/* Mobile-friendly table */}
@@ -552,49 +563,55 @@ export default function PayrollPage() {
               </div>
 
               {/* Desktop table */}
-              {workRecords?.length !== 0 ? (<div className="hidden sm:block overflow-x-auto">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.2, duration: 0.6 }}
-                >
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Employee Code</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Hourly Rate</TableHead>
-                        <TableHead>Hours Worked</TableHead>
-                        <TableHead>Overtime Hours</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {workRecords?.map((record, index) => (
-                        <motion.tr
-                          key={record.employee_id}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{
-                            delay: index * 0.1 + 1.4,
-                            duration: 0.5,
-                          }}
-                          className="hover:bg-muted/50 transition-colors"
-                        >
-                          <TableCell className="font-medium">
-                            {record.employee_code}
-                          </TableCell>
-                          <TableCell>{record.name}</TableCell>
-                          <TableCell>{`${record.hourly_rate} (${getCurrency(
-                            record.country_code
-                          )})`}</TableCell>
-                          <TableCell>{record.hours_worked}</TableCell>
-                          <TableCell>{record.overtime_hours}</TableCell>
-                        </motion.tr>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </motion.div>
-              </div>) : <p className="text-sm text-muted-foreground">No work records found</p>}
+              {workRecords?.length !== 0 ? (
+                <div className="hidden sm:block overflow-x-auto">
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.2, duration: 0.6 }}
+                  >
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Employee Code</TableHead>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Hourly Rate</TableHead>
+                          <TableHead>Hours Worked</TableHead>
+                          <TableHead>Overtime Hours</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {workRecords?.map((record, index) => (
+                          <motion.tr
+                            key={record.employee_id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{
+                              delay: index * 0.1 + 1.4,
+                              duration: 0.5,
+                            }}
+                            className="hover:bg-muted/50 transition-colors"
+                          >
+                            <TableCell className="font-medium">
+                              {record.employee_code}
+                            </TableCell>
+                            <TableCell>{record.name}</TableCell>
+                            <TableCell>{`${record.hourly_rate} (${getCurrency(
+                              record.country_code
+                            )})`}</TableCell>
+                            <TableCell>{record.hours_worked}</TableCell>
+                            <TableCell>{record.overtime_hours}</TableCell>
+                          </motion.tr>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </motion.div>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No work records found
+                </p>
+              )}
             </CardContent>
           </Card>
         </motion.div>

@@ -25,7 +25,6 @@ import {
   ArrowRight,
   Menu,
   X,
-  Building2,
   Sparkles,
   Clock,
   AlertTriangle,
@@ -124,12 +123,10 @@ export function LandingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <motion.div
-              className="flex items-center gap-2"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <Building2 className="h-8 w-8 text-primary" />
-              <span className="text-xl font-bold">Agentic Payroll</span>
+              <span className="text-xl font-bold">SemantiPay</span>
             </motion.div>
 
             {/* Desktop Navigation */}
@@ -265,7 +262,7 @@ export function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.6 }}
@@ -274,7 +271,7 @@ export function LandingPage() {
                 <Sparkles className="w-3 h-3 mr-1" />
                 AI-Powered Payroll Management
               </Badge>
-            </motion.div>
+            </motion.div> */}
 
             <motion.h1
               className="text-3xl sm:text-4xl lg:text-6xl font-bold tracking-tight mb-4 sm:mb-6"
@@ -440,7 +437,7 @@ export function LandingPage() {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6">
-                Why choose Agentic Payroll?
+                Why choose SemantiPay?
               </h2>
               <div className="space-y-4 sm:space-y-6">
                 {[
@@ -569,7 +566,7 @@ export function LandingPage() {
             transition={{ delay: 0.2, duration: 0.6 }}
             viewport={{ once: true }}
           >
-            Join thousands of companies already using Agentic Payroll to streamline
+            Join thousands of companies already using SemantiPay to streamline
             their global payroll operations.
           </motion.p>
           <motion.div
@@ -626,9 +623,8 @@ export function LandingPage() {
               className="col-span-1 sm:col-span-2 lg:col-span-1"
               variants={itemVariants}
             >
-              <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                <Building2 className="h-6 w-6 text-primary" />
-                <span className="text-lg font-bold">Agentic Payroll</span>
+              <div className="mb-3 sm:mb-4">
+                <span className="text-lg font-bold">SemantiPay</span>
               </div>
               <p className="text-sm text-muted-foreground mb-4">
                 AI-powered global payroll management for modern businesses.
@@ -674,7 +670,7 @@ export function LandingPage() {
             viewport={{ once: true }}
           >
             <p className="text-sm text-muted-foreground">
-              © 2025 Agentic Payroll. All rights reserved.
+              © 2025 SemantiPay. All rights reserved.
             </p>
           </motion.div>
         </div>

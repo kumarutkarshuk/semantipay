@@ -18,6 +18,8 @@ import { EmployeeTableSkeleton } from "@/components/loading-skeletons";
 import { getCurrency } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { fetchEmployees } from "@/lib/next-api";
+import { useUser } from "@clerk/nextjs";
+import AddEmployeeDialog from "@/components/forms/add-employee-dialog";
 
 const employees: Employee[] = [
   {
@@ -42,11 +44,9 @@ const isLoading = false;
 
 export default function EmployeesPage() {
   // const [searchTerm, setSearchTerm] = useState("")
+  const { user, isLoaded } = useUser();
 
-  const {
-    data: employees,
-    isLoading,
-  } = useQuery<Employee[]>({
+  const { data: employees, isLoading } = useQuery<Employee[]>({
     queryKey: ["employees"],
     queryFn: fetchEmployees,
   });
@@ -58,7 +58,7 @@ export default function EmployeesPage() {
   //     employee.position.toLowerCase().includes(searchTerm.toLowerCase()),
   // )
 
-  if (isLoading) {
+  if (isLoading || !isLoaded) {
     return (
       <SidebarInset>
         <header className="flex h-14 sm:h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -100,6 +100,7 @@ export default function EmployeesPage() {
         >
           {/*Mobile cards*/}
           <div className="space-y-4 sm:hidden">
+            <AddEmployeeDialog userID={user?.id!} />
             {employees?.map((e, index) => (
               <motion.div
                 key={e.employee_id}
@@ -164,12 +165,9 @@ export default function EmployeesPage() {
                   transition={{ delay: 0.3, duration: 0.5 }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                >
-                  <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Employee
-                  </Button>
-                </motion.div> */}
+                > */}
+                  <AddEmployeeDialog userID={user?.id!} />
+                {/* </motion.div> */}
               </div>
             </CardHeader>
             <CardContent>
@@ -221,7 +219,7 @@ export default function EmployeesPage() {
                         <TableCell>
                           {getCurrency(employee.country_code)}
                         </TableCell>
-                        <TableCell>{employee.region}</TableCell>
+                        <TableCell>{employee.region || "-"}</TableCell>
                         <TableCell>{employee.hourly_rate}</TableCell>
                         {/* <TableCell>
                           <div className="flex items-center gap-2">

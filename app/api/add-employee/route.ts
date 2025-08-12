@@ -16,31 +16,14 @@ export async function POST(request: Request) {
 
     if (!success) {
       return NextResponse.json(
-        { error: "REACHED DAY LIMIT FOR ADDING COMPLIANCE RULES!" },
+        { error: "REACHED DAY LIMIT FOR ADDING EMPLOYEES!" },
         { status: 429 }
       );
     }
 
-    const AGENTIC_MIDDLEWARE_URL = process.env.AGENTIC_MIDDLEWARE_URL;
-
-    if (!AGENTIC_MIDDLEWARE_URL) {
-      throw new Error("Missing agentic middleware credentials");
-    }
-
-    const embeddingsUrl = `${AGENTIC_MIDDLEWARE_URL}/generate-compliance-embeddings`;
-
     const reqBody = await request.json();
     // console.log(reqBody)
-    const res = await callTiDBDataService(
-      "/addCompliance",
-      HttpMethod.POST,
-      reqBody
-    );
-    // generate compliance embeddings
-    await fetch(embeddingsUrl, {
-      method: "PUT",
-    });
-
+    await callTiDBDataService("/addEmployee", HttpMethod.POST, reqBody);
     return new Response(null);
   } catch (err) {
     console.error(err);

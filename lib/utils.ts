@@ -37,16 +37,16 @@ export const countries = [
   { code: "IN", name: "India" },
   { code: "AE", name: "United Arab Emirates" },
   { code: "US", name: "United States" },
-  { code: "CA", name: "Canada" },
-  { code: "GB", name: "United Kingdom" },
-  { code: "AU", name: "Australia" },
-  { code: "DE", name: "Germany" },
-  { code: "FR", name: "France" },
-  { code: "SG", name: "Singapore" },
-  { code: "NZ", name: "New Zealand" }
+  // { code: "CA", name: "Canada" },
+  // { code: "GB", name: "United Kingdom" },
+  // { code: "AU", name: "Australia" },
+  // { code: "DE", name: "Germany" },
+  // { code: "FR", name: "France" },
+  // { code: "SG", name: "Singapore" },
+  // { code: "NZ", name: "New Zealand" }
 ];
 
-export const months = [
+const allMonths = [
   "January",
   "February",
   "March",
@@ -60,6 +60,8 @@ export const months = [
   "November",
   "December",
 ];
+
+export const months = allMonths.slice(0, new Date().getMonth() + 1);
 
 export function getDateFromSelectedMonthYear(monthIdx: string, year: string){
   const month = Number(monthIdx) + 1

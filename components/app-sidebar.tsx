@@ -6,22 +6,16 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { SignedIn, UserButton, useSignIn } from "@clerk/nextjs";
 import {
   Calculator,
-  BarChart3,
-  Settings,
   Users,
-  Building2,
-  User,
   Landmark,
   Loader,
 } from "lucide-react";
@@ -69,9 +63,8 @@ export function AppSidebar() {
       <SidebarHeader className="border-b px-4 py-3">
         <Link href="/">
           <div className="flex items-center gap-2">
-            <Building2 className="h-6 w-6 text-primary" />
             <span className="font-semibold text-base sm:text-lg">
-              Agentic Payroll
+              SemantiPay
             </span>
           </div>
         </Link>

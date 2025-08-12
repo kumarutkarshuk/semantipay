@@ -48,8 +48,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Employee, PayrollResult } from "@/lib/types";
 import { fetchEmployees, fetchPayrollResults } from "@/lib/next-api";
 import { getCurrency } from "@/lib/utils";
-import RectifyPayrollViolation from "@/components/rectify-payroll-violation";
-import FlagIncorrectPayroll from "@/components/flag-incorrect-payroll";
+import RectifyPayrollViolation from "@/components/forms/rectify-payroll-violation";
+import FlagIncorrectPayroll from "@/components/forms/flag-incorrect-payroll";
 
 const payrollResults: PayrollResult[] = [
   {
