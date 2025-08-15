@@ -26,7 +26,7 @@ const fontHeading = Montserrat({
 
 export const metadata: Metadata = {
   title: "SemantiPay",
-  description: "AI-powered payroll management for modern businesses",
+  description: "An AI-powered system that automates payroll processing while meeting compliance rules worldwide.",
 };
 
 export default function RootLayout({

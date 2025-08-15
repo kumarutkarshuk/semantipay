@@ -18,7 +18,8 @@ import "@xyflow/react/dist/base.css";
 import TurboNode, { type TurboNodeData } from "./TurboNode";
 import TurboEdge from "./TurboEdge";
 import "./workflow.css";
-import { SiOpenai, SiSlack } from "react-icons/si";
+import { SiSlack } from "react-icons/si";
+import { FaRobot } from "react-icons/fa";
 import {
   Database,
   DollarSign,
@@ -42,7 +43,7 @@ const initialNodes = [
   {
     id: "2",
     data: {
-      icon: <SiOpenai size={25} />,
+      icon: <FaRobot size={25} />,
       title: "Generate Query & Embeddings",
       subtitle: "Compliance query generation",
     },
@@ -60,7 +61,7 @@ const initialNodes = [
   {
     id: "4",
     data: {
-      icon: <SiOpenai size={25} />,
+      icon: <FaRobot size={25} />,
       title: "Processing...",
       subtitle: "Payroll processing using AI",
     },
