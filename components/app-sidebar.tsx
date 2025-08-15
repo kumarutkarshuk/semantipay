@@ -60,7 +60,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar className="border-r">
-      <SidebarHeader className="border-b px-4 py-3">
+      <SidebarHeader className="border-b px-4 py-[1.1rem] bg-background/80 backdrop-blur-lg border-b border-border/40">
         <Link href="/">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-base sm:text-lg">
@@ -70,7 +70,7 @@ export function AppSidebar() {
         </Link>
       </SidebarHeader>
 
-      <SidebarContent className="px-2 py-4">
+      <SidebarContent className="px-2 py-4 bg-background/80 backdrop-blur-lg border-b border-border/40">
         <SidebarGroup>
           {/* <SidebarGroupLabel className="px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
             Main Menu
@@ -95,7 +95,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t px-4 py-3">
+      <SidebarFooter className="border-t px-4 py-3 bg-background/80 backdrop-blur-lg border-b border-border/40">
         <SidebarMenu>
           <SidebarMenuItem>
             <div className="flex items-center gap-3 px-2 py-2">

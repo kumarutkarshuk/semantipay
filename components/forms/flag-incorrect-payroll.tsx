@@ -82,8 +82,8 @@ export default function FlagIncorrectPayroll({
       </DialogTrigger>
       <DialogContent className="w-[95%]">
         <DialogHeader>
-          <DialogTitle className="text-left text-red-500">
-            <div className="flex gap-2 items-center">
+          <DialogTitle className="text-left">
+            <div className="flex gap-2 items-center text-red-500">
               <Flag size={20} />
               <p>Flag Incorrect Payroll</p>
             </div>

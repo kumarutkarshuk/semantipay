@@ -110,7 +110,7 @@ export default function PayrollPage() {
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="h-5 w-28 bg-muted animate-pulse rounded" />
           <div className="ml-auto">
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
           </div>
         </header>
         <div className="flex-1 space-y-4 sm:space-y-6 p-4 sm:p-6">
@@ -127,7 +127,7 @@ export default function PayrollPage() {
         <Separator orientation="vertical" className="mr-2 h-4" />
         <h1 className="text-lg font-semibold">Payroll Results</h1>
         <div className="ml-auto">
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
         </div>
       </header>
 

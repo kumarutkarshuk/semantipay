@@ -62,7 +62,7 @@ export default function CompliancePage() {
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="h-5 w-20 bg-muted animate-pulse rounded" />
           <div className="ml-auto">
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
           </div>
         </header>
         <div className="flex-1 space-y-6 p-4 sm:p-6">
@@ -79,7 +79,7 @@ export default function CompliancePage() {
         <Separator orientation="vertical" className="mr-2 h-4" />
         <h1 className="text-lg font-semibold">Compliance</h1>
         <div className="ml-auto">
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
         </div>
       </header>
 

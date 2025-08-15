@@ -1,5 +1,44 @@
-import { LandingPage } from "@/components/landing-page"
+import { HeroSection } from "@/components/sections/hero-section";
+import { FeaturesSection } from "@/components/sections/features-section";
+import { ComponentLibraryShowcase } from "@/components/sections/component-library-showcase";
+import { TestimonialsSection } from "@/components/sections/testimonials-section";
+import { PricingSection } from "@/components/sections/pricing-section";
+import { BlogSection } from "@/components/sections/blog-section";
+import { FaqSection } from "@/components/sections/faq-section";
+import { CtaSection } from "@/components/sections/cta-section";
+import { MouseGlow } from "@/components/ui-library/effects/mouse-glow";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+import TechStackSection from "@/components/sections/tech-stack-section";
 
-export default function Home() {
-  return <LandingPage />
+export default function HomePage() {
+  return (
+    <div className="flex flex-col">
+      <SiteHeader />
+      <main className="flex flex-col items-center relative">
+        {/* Enhanced global cursor effect with subtle red glow */}
+        <MouseGlow
+          color="rgba(220, 38, 38, 0.12)"
+          size={600}
+          blur={150}
+          opacity={0.6}
+          followSpeed={0.05}
+          pulseEffect={true}
+          pulseSpeed={4}
+          pulseScale={1.05}
+        />
+
+        <HeroSection />
+        <FeaturesSection />
+        {/* <ComponentLibraryShowcase /> */}
+        {/* <TestimonialsSection /> */}
+        {/* <PricingSection /> */}
+        {/* <BlogSection /> */}
+        <TechStackSection/>
+        <FaqSection />
+        <CtaSection />
+      </main>
+      <SiteFooter />
+    </div>
+  );
 }
