@@ -68,3 +68,10 @@ export function getDateFromSelectedMonthYear(monthIdx: string, year: string){
   const twoDigitMonth = month > 9 ? month : `0${month}`
   return `${year}-${twoDigitMonth}-01`
 }
+
+export function formatDateToMonthYear(dateStr: string): string {
+  const date = new Date(dateStr);
+  const month = date.toLocaleString('default', { month: 'short' });
+  const year = date.getFullYear();
+  return `${month}-${year}`;
+}

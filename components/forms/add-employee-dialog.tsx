@@ -112,7 +112,7 @@ export default function AddEmployeeDialog({
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <div className="space-y-2">
-              <Label htmlFor="employeeCode">Employee Code</Label>
+              <Label htmlFor="employeeCode">Employee Code<span className="text-red-500">*</span></Label>
               <Input
                 id="employeeCode"
                 type="text"
@@ -125,7 +125,7 @@ export default function AddEmployeeDialog({
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">Name<span className="text-red-500">*</span></Label>
               <Input id="name" type="text" {...register("name")} />
               {errors.name && (
                 <p className="text-red-500 text-sm">{errors.name.message}</p>
@@ -164,7 +164,7 @@ export default function AddEmployeeDialog({
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="hourlyRate">Hourly Rate</Label>
+              <Label htmlFor="hourlyRate">Hourly Rate<span className="text-red-500">*</span></Label>
               <Input
                 id="hourlyRate"
                 type="number"

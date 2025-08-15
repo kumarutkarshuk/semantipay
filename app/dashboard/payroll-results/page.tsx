@@ -47,7 +47,7 @@ import { useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { Employee, PayrollResult } from "@/lib/types";
 import { fetchEmployees, fetchPayrollResults } from "@/lib/next-api";
-import { getCurrency } from "@/lib/utils";
+import { formatDateToMonthYear, getCurrency } from "@/lib/utils";
 import RectifyPayrollViolation from "@/components/forms/rectify-payroll-violation";
 import FlagIncorrectPayroll from "@/components/forms/flag-incorrect-payroll";
 
@@ -67,7 +67,7 @@ const payrollResults: PayrollResult[] = [
     net_pay: 2900.0,
     status: "DONE",
     violation_reason: undefined,
-    is_flagged: "FALSE"
+    is_flagged: "FALSE",
   },
   {
     employee_id: 2,
@@ -84,7 +84,7 @@ const payrollResults: PayrollResult[] = [
     net_pay: 3750.0,
     status: "DONE",
     violation_reason: "Hourly rate below minimum wage",
-    is_flagged: "TRUE"
+    is_flagged: "TRUE",
   },
 ];
 
@@ -109,9 +109,7 @@ export default function PayrollPage() {
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="h-5 w-28 bg-muted animate-pulse rounded" />
-          <div className="ml-auto">
-            {/* <ThemeToggle /> */}
-          </div>
+          <div className="ml-auto">{/* <ThemeToggle /> */}</div>
         </header>
         <div className="flex-1 space-y-4 sm:space-y-6 p-4 sm:p-6">
           <PayrollResultSkeleton />
@@ -126,9 +124,7 @@ export default function PayrollPage() {
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         <h1 className="text-lg font-semibold">Payroll Results</h1>
-        <div className="ml-auto">
-          {/* <ThemeToggle /> */}
-        </div>
+        <div className="ml-auto">{/* <ThemeToggle /> */}</div>
       </header>
 
       <motion.div
@@ -182,7 +178,7 @@ export default function PayrollPage() {
                             Violation
                           </Badge>
                         ) : (
-                          <Badge variant="default">Processed</Badge>
+                          <Badge variant="default" className="bg-green-800">Processed</Badge>
                         )}
                       </motion.div>
                     </div>
@@ -194,6 +190,8 @@ export default function PayrollPage() {
                     >
                       <span className="text-muted-foreground">Code:</span>
                       <div>{result.employee_code}</div>
+                      <span className="text-muted-foreground">Work Month:</span>
+                      <div>{formatDateToMonthYear(result.work_month)}</div>
                       <span className="text-muted-foreground">Currency:</span>
                       <div>{getCurrency(result.country_code)}</div>
                       <span className="text-muted-foreground">
@@ -233,10 +231,11 @@ export default function PayrollPage() {
                       {result.violation_reason && (
                         <RectifyPayrollViolation result={result} />
                       )}
-                      {result.is_flagged === "FALSE" && <FlagIncorrectPayroll
+                      <FlagIncorrectPayroll
                         userID={user?.id!}
                         result={result}
-                      />}
+                        isFlagged={result.is_flagged === "TRUE"}
+                      />
                     </div>
                   </motion.div>
                 ))}
@@ -254,6 +253,7 @@ export default function PayrollPage() {
                       <TableRow>
                         <TableHead>Employee Code</TableHead>
                         <TableHead>Name</TableHead>
+                        <TableHead>Work Month</TableHead>
                         <TableHead>Currency</TableHead>
                         <TableHead>Hourly Rate</TableHead>
                         <TableHead>Hours Worked</TableHead>
@@ -282,6 +282,9 @@ export default function PayrollPage() {
                             {result.employee_code}
                           </TableCell>
                           <TableCell>{result.name}</TableCell>
+                          <TableCell>
+                            {formatDateToMonthYear(result.work_month)}
+                          </TableCell>
                           <TableCell>
                             {getCurrency(result.country_code)}
                           </TableCell>
@@ -325,7 +328,7 @@ export default function PayrollPage() {
                                   Violation
                                 </Badge>
                               ) : (
-                                <Badge variant="default">Done</Badge>
+                                <Badge variant="default" className="bg-green-800">Done</Badge>
                               )}
                             </motion.div>
                           </TableCell>
@@ -337,10 +340,11 @@ export default function PayrollPage() {
                               {result.violation_reason && (
                                 <RectifyPayrollViolation result={result} />
                               )}
-                              {result.is_flagged === "FALSE" && <FlagIncorrectPayroll
+                              <FlagIncorrectPayroll
                                 userID={user?.id!}
                                 result={result}
-                              />}
+                                isFlagged={result.is_flagged === "TRUE"}
+                              />
                             </div>
                           </TableCell>
                         </motion.tr>

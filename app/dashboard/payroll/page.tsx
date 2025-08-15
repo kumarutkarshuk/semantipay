@@ -180,9 +180,7 @@ export default function PayrollPage() {
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="h-5 w-28 bg-muted animate-pulse rounded" />
-          <div className="ml-auto">
-            {/* <ThemeToggle /> */}
-          </div>
+          <div className="ml-auto">{/* <ThemeToggle /> */}</div>
         </header>
         <div className="flex-1 space-y-4 sm:space-y-6 p-4 sm:p-6">
           <Card>
@@ -230,9 +228,7 @@ export default function PayrollPage() {
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         <h1 className="text-lg font-semibold">Process Payroll</h1>
-        <div className="ml-auto">
-          {/* <ThemeToggle /> */}
-        </div>
+        <div className="ml-auto">{/* <ThemeToggle /> */}</div>
       </header>
 
       <motion.div
@@ -487,9 +483,9 @@ export default function PayrollPage() {
                   <CardTitle className="text-base sm:text-lg">
                     Work Records
                   </CardTitle>
-                  {/* <CardDescription className="text-sm">
-                Review processed payroll and handle any violations
-              </CardDescription> */}
+                  <CardDescription className="text-sm max-w-48 sm:max-w-full">
+                    Note: By default, overtime is paid at 2× hourly rate.
+                  </CardDescription>
                 </div>
                 <AddWorkRecord
                   userID={user?.id!}

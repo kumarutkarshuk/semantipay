@@ -146,7 +146,7 @@ export default function AddComplianceDialog({
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="ruleName">Rule Name</Label>
+              <Label htmlFor="ruleName" >Rule Name<span className="text-red-500">*</span></Label>
               <Input id="ruleName" type="text" {...register("rule_name")} />
               {errors.rule_name && (
                 <p className="text-red-500 text-sm">
@@ -155,7 +155,7 @@ export default function AddComplianceDialog({
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="ruleType">Rule Type</Label>
+              <Label htmlFor="ruleType">Rule Type<span className="text-red-500">*</span></Label>
               <Input id="ruleType" type="text" {...register("rule_type")} />
               {errors.rule_type && (
                 <p className="text-red-500 text-sm">
@@ -164,7 +164,7 @@ export default function AddComplianceDialog({
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">Description<span className="text-red-500">*</span></Label>
               <Input id="description" type="text" {...register("description")} />
               {errors.description && (
                 <p className="text-red-500 text-sm">

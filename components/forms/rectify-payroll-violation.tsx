@@ -113,7 +113,7 @@ export default function RectifyPayrollViolation({
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="hourlyRate">Hourly Rate</Label>
+              <Label htmlFor="hourlyRate">Hourly Rate<span className="text-red-500">*</span></Label>
               <Input
                 id="hourlyRate"
                 type="number"

@@ -12,7 +12,7 @@ export async function GET() {
     }
     
     const response: PayrollResult[] = await callTiDBDataService("/payrollResults", HttpMethod.GET) as PayrollResult[];
-    console.log(response)
+    // console.log(response)
     return new Response(JSON.stringify(response));
   } catch (err) {
     console.error(err)

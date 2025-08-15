@@ -30,9 +30,11 @@ const formSchema = z.object({
 export default function FlagIncorrectPayroll({
   result,
   userID,
+  isFlagged
 }: {
   result: PayrollResult;
   userID: string;
+  isFlagged: boolean;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -73,10 +75,10 @@ export default function FlagIncorrectPayroll({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button variant="destructive" size="sm" className="w-full sm:w-fit">
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full">
+          <Button variant="destructive" size="sm" className="w-full" disabled={isFlagged}>
             <Flag className="h-4 w-4 mr-1" />
-            Flag
+            {isFlagged ? "Flagged" : "Flag"}
           </Button>
         </motion.div>
       </DialogTrigger>
@@ -124,7 +126,7 @@ export default function FlagIncorrectPayroll({
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="reason">Reason</Label>
+              <Label htmlFor="reason">Reason<span className="text-red-500">*</span></Label>
               <Input id="reason" type="text" {...register("reason")} />
               {errors.reason && (
                 <p className="text-red-500 text-sm">{errors.reason.message}</p>

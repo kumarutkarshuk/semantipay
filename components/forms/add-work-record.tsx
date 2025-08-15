@@ -122,7 +122,7 @@ export default function AddWorkRecord({
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="employeeId">Employee</Label>
+              <Label htmlFor="employeeId">Employee<span className="text-red-500">*</span></Label>
               <Controller
                 name="employee_id"
                 control={control}
