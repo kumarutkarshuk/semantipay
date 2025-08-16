@@ -24,7 +24,7 @@ export function SiteFooter() {
                 <span className="sr-only">Twitter</span>
               </Link> */}
               <Link
-                href="https://github.com"
+                href="https://github.com/kumarutkarshuk/semantipay"
                 target="_blank"
                 rel="noreferrer"
                 className="glassmorphic-icon"
