@@ -1,6 +1,6 @@
-import Link from "next/link"
-import { Icons } from "@/components/icons"
-import { ScrollToTopButton } from "@/components/scroll-to-top-button"
+import Link from "next/link";
+import { Icons } from "@/components/icons";
+import { ScrollToTopButton } from "@/components/scroll-to-top-button";
 
 export function SiteFooter() {
   return (
@@ -10,21 +10,29 @@ export function SiteFooter() {
           <div className="flex flex-1 flex-col gap-4">
             <Link href="/" className="flex items-center gap-2">
               {/* <Icons.logo className="h-6 w-6" /> */}
-              <span className="font-heading text-xl tracking-tight">SemantiPay</span>
+              <span className="font-heading text-xl tracking-tight">
+                SemantiPay
+              </span>
             </Link>
             <p className="text-muted-foreground max-w-sm opacity-70">
-              An AI-driven payroll system that ensures seamless processing and full compliance across the globe.
+              An AI-driven payroll system that ensures seamless processing and
+              full compliance across the globe.
             </p>
             <div className="flex gap-4">
               {/* <Link href="https://x.com/kumarukutkarsh" target="_blank" rel="noreferrer" className="glassmorphic-icon">
                 <Icons.twitter className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
                 <span className="sr-only">Twitter</span>
               </Link> */}
-              <Link href="https://github.com" target="_blank" rel="noreferrer" className="glassmorphic-icon">
+              <Link
+                href="https://github.com"
+                target="_blank"
+                rel="noreferrer"
+                className="glassmorphic-icon"
+              >
                 <Icons.gitHub className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
                 <span className="sr-only">GitHub</span>
               </Link>
-               {/* <Link href="https://www.linkedin.com/in/kumarutkarshuk/" target="_blank" rel="noreferrer" className="glassmorphic-icon">
+              {/* <Link href="https://www.linkedin.com/in/kumarutkarshuk/" target="_blank" rel="noreferrer" className="glassmorphic-icon">
                 <Icons.linkedin className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
                 <span className="sr-only">LinkedIn</span>
               </Link> */}
@@ -50,6 +58,14 @@ export function SiteFooter() {
                     FAQ
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="mailto:semantipay@gmail.com"
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground opacity-70"
+                  >
+                    Contact
+                  </Link>
+                </li>
               </ul>
             </div>
             <div className="flex flex-col gap-2">
@@ -59,7 +75,8 @@ export function SiteFooter() {
                   <Link
                     href="https://www.linkedin.com/in/kumarutkarshuk/"
                     className="text-sm text-muted-foreground transition-colors hover:text-foreground opacity-70"
-                    target="_blank" rel="noreferrer"
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     About Utkarsh
                   </Link>
@@ -90,5 +107,5 @@ export function SiteFooter() {
       </div>
       <ScrollToTopButton />
     </footer>
-  )
+  );
 }
