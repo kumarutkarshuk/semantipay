@@ -98,7 +98,12 @@ export default function PayrollPage() {
 
   const { user, isLoaded } = useUser();
 
-  const { data: payrollResults, isLoading, error, isError } = useQuery<PayrollResult[]>({
+  const {
+    data: payrollResults,
+    isLoading,
+    error,
+    isError,
+  } = useQuery<PayrollResult[]>({
     queryKey: ["payrollResults"],
     queryFn: fetchPayrollResults,
   });
@@ -119,7 +124,7 @@ export default function PayrollPage() {
     );
   }
 
-  if(isError){
+  if (isError) {
     toast("Error fetching payroll results: " + error.message);
   }
 
@@ -183,7 +188,9 @@ export default function PayrollPage() {
                             Violation
                           </Badge>
                         ) : (
-                          <Badge variant="default" className="bg-green-800">Processed</Badge>
+                          <Badge variant="default" className="bg-green-800">
+                            Processed
+                          </Badge>
                         )}
                       </motion.div>
                     </div>
@@ -247,117 +254,133 @@ export default function PayrollPage() {
               </div>
 
               {/* Desktop table */}
-              <div className="hidden sm:block overflow-x-auto">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.2, duration: 0.6 }}
-                >
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Employee Code</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Work Month</TableHead>
-                        <TableHead>Currency</TableHead>
-                        <TableHead>Hourly Rate</TableHead>
-                        <TableHead>Hours Worked</TableHead>
-                        <TableHead>Overtime Hours</TableHead>
-                        <TableHead>Gross Pay</TableHead>
-                        <TableHead>Net Pay</TableHead>
-                        <TableHead>Deductions</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Violation Reason</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {payrollResults?.map((result, index) => (
-                        <motion.tr
-                          key={result.record_id}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{
-                            delay: index * 0.1 + 1.4,
-                            duration: 0.5,
-                          }}
-                          className="hover:bg-muted/50 transition-colors"
-                        >
-                          <TableCell className="font-medium">
-                            {result.employee_code}
-                          </TableCell>
-                          <TableCell>{result.name}</TableCell>
-                          <TableCell>
-                            {formatDateToMonthYear(result.work_month)}
-                          </TableCell>
-                          <TableCell>
-                            {getCurrency(result.country_code)}
-                          </TableCell>
-                          <TableCell>{result.hourly_rate}</TableCell>
-                          <TableCell>{result.hours_worked}</TableCell>
-                          <TableCell>{result.overtime_hours}</TableCell>
-                          <TableCell>{result.gross_pay}</TableCell>
-                          <TableCell>{result.net_pay}</TableCell>
-                          <TableCell>
-                            <div className="flex flex-col gap-2">
-                              {Object.values(
-                                JSON.parse(result.deductions || "{}")
-                              ).length === 0
-                                ? "-"
-                                : Object.entries(
-                                    JSON.parse(result.deductions || "{}")
-                                  ).map((d) => {
-                                    const [key, value] = d;
-                                    return (
-                                      <div key={key}>
-                                        {key}: {value as number}
-                                      </div>
-                                    );
-                                  })}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{
-                                delay: index * 0.1 + 1.6,
-                                type: "spring",
-                                stiffness: 500,
-                                damping: 30,
-                              }}
-                            >
-                              {result.violation_reason ? (
-                                <Badge variant="destructive" className="gap-1">
-                                  <AlertTriangle className="h-3 w-3" />
-                                  Violation
-                                </Badge>
-                              ) : (
-                                <Badge variant="default" className="bg-green-800">Done</Badge>
-                              )}
-                            </motion.div>
-                          </TableCell>
-                          <TableCell>
-                            {result.violation_reason || "-"}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex gap-2 w-full">
-                              {result.violation_reason && (
-                                <RectifyPayrollViolation result={result} />
-                              )}
-                              <FlagIncorrectPayroll
-                                userID={user?.id!}
-                                result={result}
-                                isFlagged={result.is_flagged === "TRUE"}
-                              />
-                            </div>
-                          </TableCell>
-                        </motion.tr>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </motion.div>
-              </div>
+              {payrollResults?.length !== 0 && (
+                <div className="hidden sm:block overflow-x-auto">
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.2, duration: 0.6 }}
+                  >
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Employee Code</TableHead>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Work Month</TableHead>
+                          <TableHead>Currency</TableHead>
+                          <TableHead>Hourly Rate</TableHead>
+                          <TableHead>Hours Worked</TableHead>
+                          <TableHead>Overtime Hours</TableHead>
+                          <TableHead>Gross Pay</TableHead>
+                          <TableHead>Net Pay</TableHead>
+                          <TableHead>Deductions</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Violation Reason</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {payrollResults?.map((result, index) => (
+                          <motion.tr
+                            key={result.record_id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{
+                              delay: index * 0.1 + 1.4,
+                              duration: 0.5,
+                            }}
+                            className="hover:bg-muted/50 transition-colors"
+                          >
+                            <TableCell className="font-medium">
+                              {result.employee_code}
+                            </TableCell>
+                            <TableCell>{result.name}</TableCell>
+                            <TableCell>
+                              {formatDateToMonthYear(result.work_month)}
+                            </TableCell>
+                            <TableCell>
+                              {getCurrency(result.country_code)}
+                            </TableCell>
+                            <TableCell>{result.hourly_rate}</TableCell>
+                            <TableCell>{result.hours_worked}</TableCell>
+                            <TableCell>{result.overtime_hours}</TableCell>
+                            <TableCell>{result.gross_pay}</TableCell>
+                            <TableCell>{result.net_pay}</TableCell>
+                            <TableCell>
+                              <div className="flex flex-col gap-2">
+                                {Object.values(
+                                  JSON.parse(result.deductions || "{}")
+                                ).length === 0
+                                  ? "-"
+                                  : Object.entries(
+                                      JSON.parse(result.deductions || "{}")
+                                    ).map((d) => {
+                                      const [key, value] = d;
+                                      return (
+                                        <div key={key}>
+                                          {key}: {value as number}
+                                        </div>
+                                      );
+                                    })}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{
+                                  delay: index * 0.1 + 1.6,
+                                  type: "spring",
+                                  stiffness: 500,
+                                  damping: 30,
+                                }}
+                              >
+                                {result.violation_reason ? (
+                                  <Badge
+                                    variant="destructive"
+                                    className="gap-1"
+                                  >
+                                    <AlertTriangle className="h-3 w-3" />
+                                    Violation
+                                  </Badge>
+                                ) : (
+                                  <Badge
+                                    variant="default"
+                                    className="bg-green-800"
+                                  >
+                                    Done
+                                  </Badge>
+                                )}
+                              </motion.div>
+                            </TableCell>
+                            <TableCell>
+                              {result.violation_reason || "-"}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex gap-2 w-full">
+                                {result.violation_reason && (
+                                  <RectifyPayrollViolation result={result} />
+                                )}
+                                <FlagIncorrectPayroll
+                                  userID={user?.id!}
+                                  result={result}
+                                  isFlagged={result.is_flagged === "TRUE"}
+                                />
+                              </div>
+                            </TableCell>
+                          </motion.tr>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </motion.div>
+                </div>
+              )}
+
+              {payrollResults?.length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  No payroll results to display.
+                </p>
+              )}
             </CardContent>
           </Card>
         </motion.div>

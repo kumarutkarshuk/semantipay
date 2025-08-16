@@ -88,7 +88,7 @@ const isLoading = false;
 
 export default function PayrollPage() {
   const [selectedEmployees, setSelectedEmployees] = useState<number[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<string>("6");
+  const [selectedMonth, setSelectedMonth] = useState<string>(String(months.length - 1));
   const [selectedYear, setSelectedYear] = useState<string>("2025");
   // const [isProcessing, setIsProcessing] = useState(false);
 
@@ -609,7 +609,7 @@ export default function PayrollPage() {
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  No work records found
+                  No work records found.
                 </p>
               )}
             </CardContent>

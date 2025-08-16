@@ -138,12 +138,12 @@ export default function AddWorkRecord({
                         ? undefined
                         : String(field.value)
                     }
-                    disabled={isLoading || isError}
+                    disabled={isLoading || isError || employeeSelect?.length === 0}
                   >
                     <SelectTrigger id="employeeId">
                       <SelectValue
                         placeholder={
-                          isLoading ? "Loading..." : "Select employee"
+                          isLoading ? "Loading..." : (employeeSelect?.length === 0 ? "No employees to select" : "Select employee")
                         }
                       />
                     </SelectTrigger>

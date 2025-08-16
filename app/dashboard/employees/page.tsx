@@ -47,7 +47,12 @@ export default function EmployeesPage() {
   // const [searchTerm, setSearchTerm] = useState("")
   const { user, isLoaded } = useUser();
 
-  const { data: employees, isLoading, isError, error } = useQuery<Employee[]>({
+  const {
+    data: employees,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Employee[]>({
     queryKey: ["employees"],
     queryFn: fetchEmployees,
   });
@@ -66,9 +71,7 @@ export default function EmployeesPage() {
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="h-5 w-20 bg-muted animate-pulse rounded" />
-          <div className="ml-auto">
-            {/* <ThemeToggle /> */}
-          </div>
+          <div className="ml-auto">{/* <ThemeToggle /> */}</div>
         </header>
         <div className="flex-1 space-y-6 p-4 sm:p-6">
           <EmployeeTableSkeleton />
@@ -77,7 +80,7 @@ export default function EmployeesPage() {
     );
   }
 
-  if(isError){
+  if (isError) {
     toast("Error fetching employees: " + error.message);
   }
 
@@ -87,9 +90,7 @@ export default function EmployeesPage() {
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         <h1 className="text-lg font-semibold">Employees</h1>
-        <div className="ml-auto">
-          {/* <ThemeToggle /> */}
-        </div>
+        <div className="ml-auto">{/* <ThemeToggle /> */}</div>
       </header>
 
       <motion.div
@@ -147,6 +148,11 @@ export default function EmployeesPage() {
                 </motion.div>
               </motion.div>
             ))}
+            {employees?.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                No employees to display.
+              </p>
+            )}
           </div>
           {/*Desktop card*/}
           <Card className="hover:shadow-md transition-shadow duration-300 hidden sm:block">
@@ -171,10 +177,11 @@ export default function EmployeesPage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 > */}
-                  <AddEmployeeDialog userID={user?.id!} />
+                <AddEmployeeDialog userID={user?.id!} />
                 {/* </motion.div> */}
               </div>
             </CardHeader>
+
             <CardContent>
               {/* <motion.div
                 className="flex items-center space-x-2 mb-4"
@@ -198,35 +205,39 @@ export default function EmployeesPage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
               >
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Employee Code</TableHead>
-                      <TableHead>Country Code</TableHead>
-                      <TableHead>Currency</TableHead>
-                      <TableHead>Region</TableHead>
-                      <TableHead>Hourly Rate</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {employees?.map((employee: Employee, index: number) => (
-                      <motion.tr
-                        key={employee.employee_id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 + 0.6, duration: 0.5 }}
-                        className="hover:bg-muted/50 transition-colors"
-                      >
-                        <TableCell>{employee.name}</TableCell>
-                        <TableCell>{employee.employee_code}</TableCell>
-                        <TableCell>{employee.country_code}</TableCell>
-                        <TableCell>
-                          {getCurrency(employee.country_code)}
-                        </TableCell>
-                        <TableCell>{employee.region || "-"}</TableCell>
-                        <TableCell>{employee.hourly_rate}</TableCell>
-                        {/* <TableCell>
+                {employees?.length !== 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Employee Code</TableHead>
+                        <TableHead>Country Code</TableHead>
+                        <TableHead>Currency</TableHead>
+                        <TableHead>Region</TableHead>
+                        <TableHead>Hourly Rate</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {employees?.map((employee: Employee, index: number) => (
+                        <motion.tr
+                          key={employee.employee_id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: index * 0.1 + 0.6,
+                            duration: 0.5,
+                          }}
+                          className="hover:bg-muted/50 transition-colors"
+                        >
+                          <TableCell>{employee.name}</TableCell>
+                          <TableCell>{employee.employee_code}</TableCell>
+                          <TableCell>{employee.country_code}</TableCell>
+                          <TableCell>
+                            {getCurrency(employee.country_code)}
+                          </TableCell>
+                          <TableCell>{employee.region || "-"}</TableCell>
+                          <TableCell>{employee.hourly_rate}</TableCell>
+                          {/* <TableCell>
                           <div className="flex items-center gap-2">
                             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                               <Button variant="ghost" size="sm">
@@ -240,10 +251,15 @@ export default function EmployeesPage() {
                             </motion.div>
                           </div>
                         </TableCell> */}
-                      </motion.tr>
-                    ))}
-                  </TableBody>
-                </Table>
+                        </motion.tr>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    No employees to display.
+                  </p>
+                )}
               </motion.div>
             </CardContent>
           </Card>

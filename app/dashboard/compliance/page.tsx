@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
-import { Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -33,7 +33,7 @@ const compliance: Compliance[] = [
     effective_date: "2023-01-01",
     threshold_value: 500,
     formula: "base_rate * hours_worked",
-    is_active: "FALSE"
+    is_active: "FALSE",
   },
   {
     rule_id: 2,
@@ -45,18 +45,23 @@ const compliance: Compliance[] = [
     effective_date: " 2023-02-01",
     threshold_value: 200,
     formula: "hourly_rate * 1.5 * overtime_hours",
-    is_active: "TRUE"
+    is_active: "TRUE",
   },
 ];
 
 const isLoading = false;
 
 export default function CompliancePage() {
-  const { data: compliance, isLoading, error, isError } = useQuery<Compliance[]>({
+  const {
+    data: compliance,
+    isLoading,
+    error,
+    isError,
+  } = useQuery<Compliance[]>({
     queryKey: ["compliance"],
     queryFn: fetchCompliance,
   });
-  const {user, isLoaded} = useUser()
+  const { user, isLoaded } = useUser();
 
   if (isLoading || !isLoaded) {
     return (
@@ -65,9 +70,7 @@ export default function CompliancePage() {
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="h-5 w-20 bg-muted animate-pulse rounded" />
-          <div className="ml-auto">
-            {/* <ThemeToggle /> */}
-          </div>
+          <div className="ml-auto">{/* <ThemeToggle /> */}</div>
         </header>
         <div className="flex-1 space-y-6 p-4 sm:p-6">
           <ComplianceTableSkeleton />
@@ -76,7 +79,7 @@ export default function CompliancePage() {
     );
   }
 
-  if(isError){
+  if (isError) {
     toast("Error fetching compliance rule: " + error.message);
   }
 
@@ -86,9 +89,7 @@ export default function CompliancePage() {
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         <h1 className="text-lg font-semibold">Compliance</h1>
-        <div className="ml-auto">
-          {/* <ThemeToggle /> */}
-        </div>
+        <div className="ml-auto">{/* <ThemeToggle /> */}</div>
       </header>
 
       <motion.div
@@ -104,7 +105,7 @@ export default function CompliancePage() {
         >
           {/*Mobile cards*/}
           <div className="space-y-4 sm:hidden">
-            <AddComplianceDialog userID={user?.id!}/>
+            <AddComplianceDialog userID={user?.id!} />
             {compliance?.map((c, index) => (
               <motion.div
                 key={c.rule_id}
@@ -141,6 +142,11 @@ export default function CompliancePage() {
                 <ComplianceActiveButton isActive={c.is_active==="TRUE"} ruleId={c.rule_id}/>
               </motion.div>
             ))}
+            {compliance?.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                No compliance to display.
+              </p>
+            )}
           </div>
           {/*Desktop card*/}
           <Card className="hover:shadow-md transition-shadow duration-300 hidden sm:block">
@@ -152,10 +158,10 @@ export default function CompliancePage() {
                   transition={{ delay: 0.2, duration: 0.5 }}
                 >
                   <CardTitle className="text-base sm:text-lg w-full">
-                   Compliance Rules
+                    Compliance Rules
                   </CardTitle>
                 </motion.div>
-                <AddComplianceDialog userID={user?.id!}/>
+                <AddComplianceDialog userID={user?.id!} />
               </div>
             </CardHeader>
             <CardContent>
@@ -164,44 +170,58 @@ export default function CompliancePage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
               >
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Country Code</TableHead>
-                      <TableHead>Region</TableHead>
-                      <TableHead>Rule Name</TableHead>
-                      <TableHead className="w-[50%]">Description</TableHead>
-                      <TableHead>Effective Date</TableHead>
-                      <TableHead>Threshold Value</TableHead>
-                      <TableHead>Actions</TableHead>
-                      {/* <TableHead>Formula</TableHead> */}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {compliance?.map((c: Compliance, index: number) => (
-                      <motion.tr
-                        key={c.rule_id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 + 0.6, duration: 0.5 }}
-                        className="hover:bg-muted/50 transition-colors"
-                      >
-                        <TableCell>{c.country_code}</TableCell>
-                        <TableCell>{c.region ? c.region : "-"}</TableCell>
-                        <TableCell>{c.rule_name}</TableCell>
-                        <TableCell className="line-c">
-                          {c.description}
-                        </TableCell>
-                        <TableCell>{c.effective_date}</TableCell>
-                        <TableCell>{`${c.threshold_value} (${getCurrency(
-                          c.country_code
-                        )})`}</TableCell>
-                        <TableCell><ComplianceActiveButton isActive={c.is_active==="TRUE"} ruleId={c.rule_id}/></TableCell>
-                        {/* <TableCell>{c.formula}</TableCell> */}
-                      </motion.tr>
-                    ))}
-                  </TableBody>
-                </Table>
+                {compliance?.length !== 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Country Code</TableHead>
+                        <TableHead>Region</TableHead>
+                        <TableHead>Rule Name</TableHead>
+                        <TableHead className="w-[50%]">Description</TableHead>
+                        <TableHead>Effective Date</TableHead>
+                        <TableHead>Threshold Value</TableHead>
+                        <TableHead>Actions</TableHead>
+                        {/* <TableHead>Formula</TableHead> */}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {compliance?.map((c: Compliance, index: number) => (
+                        <motion.tr
+                          key={c.rule_id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: index * 0.1 + 0.6,
+                            duration: 0.5,
+                          }}
+                          className="hover:bg-muted/50 transition-colors"
+                        >
+                          <TableCell>{c.country_code}</TableCell>
+                          <TableCell>{c.region ? c.region : "-"}</TableCell>
+                          <TableCell>{c.rule_name}</TableCell>
+                          <TableCell className="line-c">
+                            {c.description}
+                          </TableCell>
+                          <TableCell>{c.effective_date}</TableCell>
+                          <TableCell>{`${c.threshold_value} (${getCurrency(
+                            c.country_code
+                          )})`}</TableCell>
+                          <TableCell>
+                            <ComplianceActiveButton
+                              isActive={c.is_active === "TRUE"}
+                              ruleId={c.rule_id}
+                            />
+                          </TableCell>
+                          {/* <TableCell>{c.formula}</TableCell> */}
+                        </motion.tr>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    No compliance to display.
+                  </p>
+                )}
               </motion.div>
             </CardContent>
           </Card>
