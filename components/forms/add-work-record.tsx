@@ -45,7 +45,7 @@ export default function AddWorkRecord({
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
-  const { data: employeeSelect, isLoading } = useQuery<EmployeeSelect[]>({
+  const { data: employeeSelect, isLoading, error, isError } = useQuery<EmployeeSelect[]>({
     queryKey: ["employeeSelect"],
     queryFn: async () => {
       return await fetchEmployeeSelect({
@@ -100,6 +100,10 @@ export default function AddWorkRecord({
     // setOpen(false);
   }
 
+  if(isError){
+    toast("Error fetching compliance rule: " + error.message);
+  }
+
   return (
     <Dialog open={open} onOpenChange={isLoading ? () => {} : setOpen}>
       <DialogTrigger asChild>
@@ -134,7 +138,7 @@ export default function AddWorkRecord({
                         ? undefined
                         : String(field.value)
                     }
-                    disabled={isLoading}
+                    disabled={isLoading || isError}
                   >
                     <SelectTrigger id="employeeId">
                       <SelectValue

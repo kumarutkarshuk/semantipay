@@ -20,6 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchEmployees } from "@/lib/next-api";
 import { useUser } from "@clerk/nextjs";
 import AddEmployeeDialog from "@/components/forms/add-employee-dialog";
+import { toast } from "sonner";
 
 const employees: Employee[] = [
   {
@@ -46,7 +47,7 @@ export default function EmployeesPage() {
   // const [searchTerm, setSearchTerm] = useState("")
   const { user, isLoaded } = useUser();
 
-  const { data: employees, isLoading } = useQuery<Employee[]>({
+  const { data: employees, isLoading, isError, error } = useQuery<Employee[]>({
     queryKey: ["employees"],
     queryFn: fetchEmployees,
   });
@@ -74,6 +75,10 @@ export default function EmployeesPage() {
         </div>
       </SidebarInset>
     );
+  }
+
+  if(isError){
+    toast("Error fetching employees: " + error.message);
   }
 
   return (

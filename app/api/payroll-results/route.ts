@@ -15,8 +15,8 @@ export async function GET() {
     // console.log(response)
     return new Response(JSON.stringify(response));
   } catch (err) {
-    console.error(err)
-    return new Response(JSON.stringify(err), {
+    console.error(err instanceof Error ? err?.message : err)
+    return new Response(JSON.stringify(err instanceof Error ? err?.message : err), {
       status: 500,
     });
   }

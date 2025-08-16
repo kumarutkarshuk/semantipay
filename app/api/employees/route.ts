@@ -14,8 +14,8 @@ export async function GET() {
     const response: Employee[] = await callTiDBDataService("/employees", HttpMethod.GET) as Employee[];
     return new Response(JSON.stringify(response));
   } catch (err) {
-    console.error(err)
-    return new Response(JSON.stringify(err), {
+    console.error(err instanceof Error ? err?.message : err)
+    return new Response(JSON.stringify(err instanceof Error ? err?.message : err), {
       status: 500,
     });
   }

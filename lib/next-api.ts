@@ -5,9 +5,7 @@ export async function fetchEmployees(): Promise<Employee[]> {
   const baseUrl = getBaseUrl();
   const response = await fetch(`${baseUrl}/api/employees`);
 
-  if (!response.ok) {
-    throw new Error("failed to fetch employees");
-  }
+  await handleError(response)
 
   return response.json();
 }
@@ -16,9 +14,7 @@ export async function fetchCompliance(): Promise<Compliance[]> {
   const baseUrl = getBaseUrl();
   const response = await fetch(`${baseUrl}/api/compliance`);
 
-  if (!response.ok) {
-    throw new Error("failed to fetch compliance data");
-  }
+  await handleError(response)
 
   return response.json();
 }
@@ -37,9 +33,7 @@ export async function fetchWorkRecords(request: Object): Promise<WorkRecord[]> {
     
   );
 
-  if (!response.ok) {
-    throw new Error("failed to fetch work records");
-  }
+  await handleError(response)
 
   return response.json();
 }
@@ -48,9 +42,7 @@ export async function fetchPayrollResults(): Promise<PayrollResult[]> {
   const baseUrl = getBaseUrl();
   const response = await fetch(`${baseUrl}/api/payroll-results`);
 
-  if (!response.ok) {
-    throw new Error("failed to fetch payroll results");
-  }
+  await handleError(response)
 
   return response.json();
 }
@@ -70,9 +62,7 @@ export async function processPayroll(request: Object): Promise<NextAPIRes> {
     
   );
 
-  if (!response.ok) {
-    throw new Error("failed to process payroll");
-  }
+  await handleError(response)
 
   return response.json();
 }
@@ -92,9 +82,7 @@ export async function rectifyViolation(request: Object): Promise<void> {
     
   );
 
-  if (!response.ok) {
-    throw new Error("failed to update records");
-  }
+  await handleError(response)
 }
 
 export async function flagIncorrectPayroll(request: Object): Promise<void> {
@@ -112,9 +100,7 @@ export async function flagIncorrectPayroll(request: Object): Promise<void> {
     
   );
 
-  if (!response.ok) {
-    throw new Error("failed to flag incorrect payroll");
-  }
+  await handleError(response)
 }
 
 export async function addCompliance(request: Object): Promise<void> {
@@ -132,9 +118,7 @@ export async function addCompliance(request: Object): Promise<void> {
     
   );
 
-  if (!response.ok) {
-    throw new Error(await response.json().then(d => d.error));
-  }
+  await handleError(response)
 }
 
 export async function addWorkRecord(request: Object): Promise<void> {
@@ -152,9 +136,7 @@ export async function addWorkRecord(request: Object): Promise<void> {
     
   );
 
-  if (!response.ok) {
-    throw new Error("failed to add work record");
-  }
+  await handleError(response)
 }
 
 export async function fetchEmployeeSelect(request: Object): Promise<EmployeeSelect[]> {
@@ -172,9 +154,7 @@ export async function fetchEmployeeSelect(request: Object): Promise<EmployeeSele
     
   );
 
-  if (!response.ok) {
-    throw new Error("failed to add work record");
-  }
+  await handleError(response)
 
   return response.json();
 }
@@ -194,9 +174,7 @@ export async function addEmployee(request: Object): Promise<void> {
     
   );
 
-  if (!response.ok) {
-    throw new Error("failed to add compliance rule");
-  }
+  await handleError(response)
 }
 
 export async function updateComplianceActive(request: Object): Promise<void> {
@@ -214,9 +192,7 @@ export async function updateComplianceActive(request: Object): Promise<void> {
     
   );
 
-  if (!response.ok) {
-    throw new Error("failed to update compliance active status");
-  }
+  await handleError(response)
 }
 
 function getBaseUrl() {
@@ -225,4 +201,11 @@ function getBaseUrl() {
     throw new Error("Next API base URL not found");
   }
   return baseUrl;
+}
+
+async function handleError(response: Response){
+  if (!response.ok) {
+    const resJSON = await response.json()
+    throw new Error(resJSON);
+  }
 }

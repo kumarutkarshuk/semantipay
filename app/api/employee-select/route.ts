@@ -16,8 +16,8 @@ export async function POST(request: Request) {
     const response: EmployeeSelect[] =  await callTiDBDataService("/employeeSelect", HttpMethod.POST, reqBody) as EmployeeSelect[];
     return new Response(JSON.stringify(response));
   } catch (err) {
-    console.error(err);
-    return new Response(JSON.stringify(err), {
+    console.error(err instanceof Error ? err?.message : err)
+    return new Response(JSON.stringify(err instanceof Error ? err?.message : err), {
       status: 500,
     });
   }

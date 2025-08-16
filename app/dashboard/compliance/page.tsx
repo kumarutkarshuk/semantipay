@@ -21,6 +21,7 @@ import { getCurrency } from "@/lib/utils";
 import AddComplianceDialog from "@/components/forms/add-compliance-dialog";
 import { useUser } from "@clerk/nextjs";
 import ComplianceActiveButton from "@/components/compliance-active-button";
+import { toast } from "sonner";
 
 const compliance: Compliance[] = [
   {
@@ -51,7 +52,7 @@ const compliance: Compliance[] = [
 const isLoading = false;
 
 export default function CompliancePage() {
-  const { data: compliance, isLoading } = useQuery<Compliance[]>({
+  const { data: compliance, isLoading, error, isError } = useQuery<Compliance[]>({
     queryKey: ["compliance"],
     queryFn: fetchCompliance,
   });
@@ -73,6 +74,10 @@ export default function CompliancePage() {
         </div>
       </SidebarInset>
     );
+  }
+
+  if(isError){
+    toast("Error fetching compliance rule: " + error.message);
   }
 
   return (

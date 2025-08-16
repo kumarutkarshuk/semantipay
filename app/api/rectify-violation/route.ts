@@ -12,12 +12,14 @@ export async function PUT(request: Request) {
     }
 
     const reqBody = await request.json();
-    // console.log("reqBody",reqBody)
+    
+    console.log("user:", userId, "rectifying payroll : request:", reqBody)
+
     await callTiDBDataService("/rectifyViolation", HttpMethod.PUT, reqBody);
     return new Response(null);
   } catch (err) {
-    console.error(err);
-    return new Response(null, {
+    console.error(err instanceof Error ? err?.message : err)
+    return new Response(JSON.stringify(err instanceof Error ? err?.message : err), {
       status: 500,
     });
   }

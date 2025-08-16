@@ -1,7 +1,7 @@
 import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
 
-export async function isRateLimited(userId: string): Promise<Boolean> {
+export async function isRateLimited(userId: string, endpoint: string): Promise<Boolean> {
   const UPSTASH_REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL;
   const UPSTASH_REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
   const POST_LIMIT = Number(process.env.POST_LIMIT) || 3;
@@ -21,6 +21,7 @@ export async function isRateLimited(userId: string): Promise<Boolean> {
     analytics: true,
   });
 
-  const { success } = await rateLimit.limit(userId);
+  const identifier = `${userId}:${endpoint}`;
+  const { success } = await rateLimit.limit(identifier);
   return success;
 }

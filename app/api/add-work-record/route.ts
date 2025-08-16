@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "not authorized" }, { status: 401 });
     }
 
-    const success = await isRateLimited(userId);
+    const success = await isRateLimited(userId, "/add-work-record");
 
     if (!success) {
       return NextResponse.json(
@@ -26,8 +26,8 @@ export async function POST(request: Request) {
     await callTiDBDataService("/addWorkRecord", HttpMethod.POST, reqBody);
     return new Response(null);
   } catch (err) {
-    console.error(err);
-    return new Response(null, {
+    console.error(err instanceof Error ? err?.message : err)
+    return new Response(JSON.stringify(err instanceof Error ? err?.message : err), {
       status: 500,
     });
   }

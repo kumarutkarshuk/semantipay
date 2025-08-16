@@ -50,6 +50,7 @@ import { fetchEmployees, fetchPayrollResults } from "@/lib/next-api";
 import { formatDateToMonthYear, getCurrency } from "@/lib/utils";
 import RectifyPayrollViolation from "@/components/forms/rectify-payroll-violation";
 import FlagIncorrectPayroll from "@/components/forms/flag-incorrect-payroll";
+import { toast } from "sonner";
 
 const payrollResults: PayrollResult[] = [
   {
@@ -97,7 +98,7 @@ export default function PayrollPage() {
 
   const { user, isLoaded } = useUser();
 
-  const { data: payrollResults, isLoading } = useQuery<PayrollResult[]>({
+  const { data: payrollResults, isLoading, error, isError } = useQuery<PayrollResult[]>({
     queryKey: ["payrollResults"],
     queryFn: fetchPayrollResults,
   });
@@ -116,6 +117,10 @@ export default function PayrollPage() {
         </div>
       </SidebarInset>
     );
+  }
+
+  if(isError){
+    toast("Error fetching payroll results: " + error.message);
   }
 
   return (

@@ -95,7 +95,7 @@ export default function PayrollPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { data: workRecords, isLoading } = useQuery<WorkRecord[]>({
+  const { data: workRecords, isLoading, error, isError } = useQuery<WorkRecord[]>({
     queryKey: ["workRecords", selectedMonth, selectedYear],
     queryFn: async () => {
       return await fetchWorkRecords({
@@ -220,6 +220,10 @@ export default function PayrollPage() {
         </div>
       </SidebarInset>
     );
+  }
+
+  if(isError){
+    toast("Error processing payroll: " + error.message);
   }
 
   return (

@@ -15,8 +15,8 @@ export async function POST(request: Request) {
     await callTiDBDataService("/flagPayroll", HttpMethod.POST, reqBody);
     return new Response(null);
   } catch (err) {
-    console.error(err);
-    return new Response(null, {
+    console.error(err instanceof Error ? err?.message : err)
+    return new Response(JSON.stringify(err instanceof Error ? err?.message : err), {
       status: 500,
     });
   }

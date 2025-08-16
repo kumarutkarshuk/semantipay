@@ -12,7 +12,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "not authorized" }, { status: 401 });
     }
 
-    const success = await isRateLimited(userId);
+    const success = await isRateLimited(userId, "/update-relevant-compliance");
 
     if (!success) {
       return NextResponse.json(
@@ -22,6 +22,8 @@ export async function PUT(request: Request) {
     }
 
     const reqBody = await request.json();
+
+    console.log("user:", userId, "updating compliance active status : req:", reqBody)
     
     const res = await callTiDBDataService(
       "/updateComplianceActive",
@@ -33,8 +35,8 @@ export async function PUT(request: Request) {
 
     return new Response(null);
   } catch (err) {
-    console.error(err);
-    return new Response(null, {
+    console.error(err instanceof Error ? err?.message : err)
+    return new Response(JSON.stringify(err instanceof Error ? err?.message : err), {
       status: 500,
     });
   }
