@@ -62,6 +62,7 @@ export default function RootLayout({
           </div>
         </ThemeProvider>
         <Toaster position="top-center" />
+        <Analytics/>
       </body>
     </html>
   );
