@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     const resJSON = await res.json();
 
     if (resJSON?.data?.error !== "") {
-      throw new Error("Error processing payroll : user - " + userId);
+      throw new Error("Dify workflow issue");
     }
 
     const nextAPIres = {
