@@ -83,7 +83,7 @@ export default function AddWorkRecord({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    // console.log(values)
     if(values.employee_id === -1){
       setError("employee_id", {
         type: "manual",
@@ -92,12 +92,12 @@ export default function AddWorkRecord({
       return;
     }
 
-    // await mutateAsync({
-    //   ...values,
-    //   work_month: workMonth,
-    //   created_by: userID,
-    // });
-    // setOpen(false);
+    await mutateAsync({
+      ...values,
+      work_month: workMonth,
+      created_by: userID,
+    });
+    setOpen(false);
   }
 
   if(isError){

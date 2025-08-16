@@ -15,10 +15,11 @@ export async function POST(request: Request) {
     const success = await isRateLimited(userId, "/add-employee");
 
     if (!success) {
-      return NextResponse.json(
-        { error: "REACHED DAY LIMIT FOR ADDING EMPLOYEES!" },
-        { status: 429 }
-      );
+      throw new Error("REACHED DAY LIMIT FOR ADDING EMPLOYEES!");
+      // return NextResponse.json(
+      //   { error: "REACHED DAY LIMIT FOR PADDING EMPLOYEES!" },
+      //   { status: 429 }
+      // );
     }
 
     const reqBody = await request.json();

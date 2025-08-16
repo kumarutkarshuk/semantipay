@@ -73,6 +73,7 @@ export default function RectifyPayrollViolation({
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    // verify
     if(values.hourly_rate === result.hourly_rate && 
         values.hours_worked === result.hours_worked &&
         values.overtime_hours === result.overtime_hours

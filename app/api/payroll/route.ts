@@ -13,10 +13,11 @@ export async function POST(request: Request) {
     const success = await isRateLimited(userId, "/payroll");
 
     if (!success) {
-      return NextResponse.json(
-        { error: "REACHED DAY LIMIT FOR PROCESSING PAYROLL!" },
-        { status: 429 }
-      );
+      throw new Error("REACHED DAY LIMIT FOR PROCESSING PAYROLL!");
+      // return NextResponse.json(
+      //   { error: "REACHED DAY LIMIT FOR PROCESSING PAYROLL!" },
+      //   { status: 429 }
+      // );
     }
 
     const DIFY_TOKEN = process.env.DIFY_TOKEN;
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
       throw new Error("Missing DIFY credentials");
     }
 
-    console.log("user:", userId, "processing payroll...")
+    console.log("user:", userId, "processing payroll...");
 
     const reqBody = await request.json();
     // console.log(reqBody)
@@ -41,9 +42,9 @@ export async function POST(request: Request) {
     });
 
     const resJSON = await res.json();
-    
-    if(resJSON?.data?.error !== ""){
-      throw new Error("Error processing payroll : user - " + userId)
+
+    if (resJSON?.data?.error !== "") {
+      throw new Error("Error processing payroll : user - " + userId);
     }
 
     const nextAPIres = {
@@ -53,9 +54,12 @@ export async function POST(request: Request) {
 
     return new Response(JSON.stringify(nextAPIres));
   } catch (err) {
-    console.error(err instanceof Error ? err?.message : err)
-    return new Response(JSON.stringify(err instanceof Error ? err?.message : err), {
-      status: 500,
-    });
+    console.error(err instanceof Error ? err?.message : err);
+    return new Response(
+      JSON.stringify(err instanceof Error ? err?.message : err),
+      {
+        status: 500,
+      }
+    );
   }
 }

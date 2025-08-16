@@ -15,10 +15,11 @@ export async function POST(request: Request) {
     const success = await isRateLimited(userId, "add-compliance");
 
     if (!success) {
-      return NextResponse.json(
-        { error: "REACHED DAY LIMIT FOR ADDING COMPLIANCE RULES!" },
-        { status: 429 }
-      );
+      throw new Error("REACHED DAY LIMIT FOR ADDING COMPLIANCE RULES!");
+      // return NextResponse.json(
+      //   { error: "REACHED DAY LIMIT FOR ADDING COMPLIANCE RULES!" },
+      //   { status: 429 }
+      // );
     }
 
     const AGENTIC_MIDDLEWARE_URL = process.env.AGENTIC_MIDDLEWARE_URL;

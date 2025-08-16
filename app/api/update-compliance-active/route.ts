@@ -15,10 +15,11 @@ export async function PUT(request: Request) {
     const success = await isRateLimited(userId, "/update-relevant-compliance");
 
     if (!success) {
-      return NextResponse.json(
-        { error: "REACHED DAY LIMIT FOR UPDATE COMPLIANCE ACTIVE STATUS!" },
-        { status: 429 }
-      );
+      throw new Error("REACHED DAY LIMIT FOR UPDATING COMPLIANCE ACTIVE STATUS!");
+      // return NextResponse.json(
+      //   { error: "REACHED DAY LIMIT FOR UPDATING COMPLIANCE ACTIVE STATUS!" },
+      //   { status: 429 }
+      // );
     }
 
     const reqBody = await request.json();
