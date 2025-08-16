@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { cubicBezier, motion } from "framer-motion"
-import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { cubicBezier, motion } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
-import { ScrollReveal } from "@/components/scroll-reveal"
-import { GradientButton } from "@/components/ui-library/buttons/gradient-button"
-import { AnimatedBackground } from "../ui/animated-background"
-import { MagneticButton } from "../ui/magnetic-button"
-import { SpotlightCard } from "../ui/spotlight-card"
-import Workflow from "../react-flow/workflow"
+import { ScrollReveal } from "@/components/scroll-reveal";
+import { GradientButton } from "@/components/ui-library/buttons/gradient-button";
+import { AnimatedBackground } from "../ui/animated-background";
+import { MagneticButton } from "../ui/magnetic-button";
+import { SpotlightCard } from "../ui/spotlight-card";
+import Workflow from "../react-flow/workflow";
 
 // Animation variants
 const containerVariants = {
@@ -21,7 +21,7 @@ const containerVariants = {
       delayChildren: 0.3,
     },
   },
-}
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -30,12 +30,19 @@ const itemVariants = {
     y: 0,
     transition: { duration: 0.6, ease: cubicBezier(0.22, 1, 0.36, 1) },
   },
-}
+};
 
 export function HeroSection() {
   return (
-    <section id="home" className="relative w-full py-16 md:py-24 lg:py-32 xl:py-36 overflow-hidden">
-      <AnimatedBackground variant="gradient" color="rgba(220, 38, 38, 0.08)" secondaryColor="rgba(75, 85, 99, 0.08)" />
+    <section
+      id="home"
+      className="relative w-full py-16 md:py-24 lg:py-32 xl:py-36 overflow-hidden"
+    >
+      <AnimatedBackground
+        variant="gradient"
+        color="rgba(220, 38, 38, 0.08)"
+        secondaryColor="rgba(75, 85, 99, 0.08)"
+      />
 
       <div className="container px-4 sm:px-6 md:px-8 mx-auto">
         <div className="grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-16 xl:grid-cols-1 items-center">
@@ -53,7 +60,8 @@ export function HeroSection() {
                   <span className="text-foreground">Agentic Payroll</span>
                 </h1>
                 <p className="max-w-[700px] mx-auto lg:mx-0 text-gray-500 text-base sm:text-lg md:text-xl dark:text-gray-400 opacity-70 leading-relaxed text-center">
-                  An AI-powered system that automates payroll processing while meeting compliance rules worldwide.
+                  An AI-powered system that automates payroll processing while
+                  meeting compliance rules worldwide.
                 </p>
               </motion.div>
 
@@ -68,12 +76,19 @@ export function HeroSection() {
                   gradientTo="to-red-700"
                   asChild
                 >
-                  <Link href="/dashboard/payroll" className="flex items-center justify-center">
+                  <Link
+                    href="/dashboard/payroll"
+                    className="flex items-center justify-center"
+                  >
                     Get Started
                     <motion.span
                       className="ml-2 inline-block"
                       animate={{ x: [0, 4, 0] }}
-                      transition={{ repeat: Number.POSITIVE_INFINITY, repeatDelay: 2, duration: 1 }}
+                      transition={{
+                        repeat: Number.POSITIVE_INFINITY,
+                        repeatDelay: 2,
+                        duration: 1,
+                      }}
                     >
                       <ArrowRight className="h-4 w-4" />
                     </motion.span>
@@ -81,8 +96,13 @@ export function HeroSection() {
                 </GradientButton>
 
                 <MagneticButton className="neumorphic-button w-full sm:w-auto">
-                  <Link href="#features" className="px-6 py-3 block text-center">
-                    View Features
+                  <Link
+                    href="https://app.supademo.com/demo/cmeeleghy7n5hh3pym4dvzcuv?utm_source=link&step=1"
+                    className="px-6 py-3 block text-center"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View Demo
                   </Link>
                 </MagneticButton>
               </motion.div>
@@ -133,12 +153,12 @@ export function HeroSection() {
                 </div>
               </div>
             </SpotlightCard> */}
-              <div className="relative h-[350px] sm:h-[400px] lg:h-[600px] w-full overflow-hidden rounded-xl border border-glow-red">
-                <Workflow/>
-              </div>
+            <div className="relative h-[350px] sm:h-[400px] lg:h-[600px] w-full overflow-hidden rounded-xl border border-glow-red">
+              <Workflow />
+            </div>
           </ScrollReveal>
         </div>
       </div>
     </section>
-  )
+  );
 }
