@@ -348,7 +348,7 @@ export default function PayrollPage() {
                                     variant="default"
                                     className="bg-green-800"
                                   >
-                                    Done
+                                    Processed
                                   </Badge>
                                 )}
                               </motion.div>
