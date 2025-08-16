@@ -46,7 +46,7 @@ export default function AddWorkRecord({
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const { data: employeeSelect, isLoading, error, isError } = useQuery<EmployeeSelect[]>({
-    queryKey: ["employeeSelect"],
+    queryKey: ["employeeSelect", workMonth],
     queryFn: async () => {
       return await fetchEmployeeSelect({
         work_month: workMonth,

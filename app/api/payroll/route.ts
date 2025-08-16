@@ -40,9 +40,11 @@ export async function POST(request: Request) {
       body: JSON.stringify(reqBody),
     });
 
-    // TODO - handle error
     const resJSON = await res.json();
-    // console.log(resJSON)
+    
+    if(resJSON?.data?.error !== ""){
+      throw new Error("Error processing payroll : user - " + userId)
+    }
 
     const nextAPIres = {
       status: "success",
