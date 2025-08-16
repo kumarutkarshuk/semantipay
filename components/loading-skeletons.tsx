@@ -197,14 +197,14 @@ export function ComplianceTableSkeleton() {
         <CardContent className="mt-4">
           <div>
             <div className="space-y-3">
-              <div className="grid grid-cols-6 gap-4 pb-2">
-                {Array.from({ length: 6 }).map((_, i) => (
+              <div className="grid grid-cols-7 gap-4 pb-2">
+                {Array.from({ length: 7 }).map((_, i) => (
                   <Skeleton key={i} className="h-5 w-[80%]" />
                 ))}
               </div>
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="grid grid-cols-6 gap-4 py-2">
-                  {Array.from({ length: 6 }).map((_, j) => (
+                <div key={i} className="grid grid-cols-7 gap-4 py-2">
+                  {Array.from({ length: 7 }).map((_, j) => (
                     <Skeleton key={j} className="h-4 w-[50%]" />
                   ))}
                 </div>

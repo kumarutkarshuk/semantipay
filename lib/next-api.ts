@@ -199,6 +199,26 @@ export async function addEmployee(request: Object): Promise<void> {
   }
 }
 
+export async function updateComplianceActive(request: Object): Promise<void> {
+  const baseUrl = getBaseUrl();
+  
+  const response = await fetch(
+    `${baseUrl}/api/update-compliance-active`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request)
+    },
+    
+  );
+
+  if (!response.ok) {
+    throw new Error("failed to update compliance active status");
+  }
+}
+
 function getBaseUrl() {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!baseUrl) {

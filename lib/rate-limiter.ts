@@ -17,7 +17,7 @@ export async function isRateLimited(userId: string): Promise<Boolean> {
 
   const rateLimit = new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(POST_LIMIT, "1 d"), // 5 requests per 60 sec
+    limiter: Ratelimit.slidingWindow(POST_LIMIT, "1 d"),
     analytics: true,
   });
 

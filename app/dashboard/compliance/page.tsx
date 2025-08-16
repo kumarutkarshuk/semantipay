@@ -20,6 +20,7 @@ import { fetchCompliance } from "@/lib/next-api";
 import { getCurrency } from "@/lib/utils";
 import AddComplianceDialog from "@/components/forms/add-compliance-dialog";
 import { useUser } from "@clerk/nextjs";
+import ComplianceActiveButton from "@/components/compliance-active-button";
 
 const compliance: Compliance[] = [
   {
@@ -31,6 +32,7 @@ const compliance: Compliance[] = [
     effective_date: "2023-01-01",
     threshold_value: 500,
     formula: "base_rate * hours_worked",
+    is_active: "FALSE"
   },
   {
     rule_id: 2,
@@ -42,6 +44,7 @@ const compliance: Compliance[] = [
     effective_date: " 2023-02-01",
     threshold_value: 200,
     formula: "hourly_rate * 1.5 * overtime_hours",
+    is_active: "TRUE"
   },
 ];
 
@@ -130,6 +133,7 @@ export default function CompliancePage() {
                   <span className="text-muted-foreground">Description:</span>
                   <div>{c.description}</div>
                 </motion.div>
+                <ComplianceActiveButton isActive={c.is_active==="TRUE"} ruleId={c.rule_id}/>
               </motion.div>
             ))}
           </div>
@@ -164,6 +168,7 @@ export default function CompliancePage() {
                       <TableHead className="w-[50%]">Description</TableHead>
                       <TableHead>Effective Date</TableHead>
                       <TableHead>Threshold Value</TableHead>
+                      <TableHead>Actions</TableHead>
                       {/* <TableHead>Formula</TableHead> */}
                     </TableRow>
                   </TableHeader>
@@ -186,6 +191,7 @@ export default function CompliancePage() {
                         <TableCell>{`${c.threshold_value} (${getCurrency(
                           c.country_code
                         )})`}</TableCell>
+                        <TableCell><ComplianceActiveButton isActive={c.is_active==="TRUE"} ruleId={c.rule_id}/></TableCell>
                         {/* <TableCell>{c.formula}</TableCell> */}
                       </motion.tr>
                     ))}

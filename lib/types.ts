@@ -23,6 +23,7 @@ export interface Compliance {
   effective_date: string; // check for date data type
   threshold_value: number;
   formula: string;
+  is_active: "TRUE" | "FALSE";
 }
 
 export interface WorkRecord {
