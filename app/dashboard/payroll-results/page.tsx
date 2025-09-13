@@ -149,7 +149,7 @@ export default function PayrollPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
-          <Card className="hover:shadow-md transition-shadow duration-300">
+          <Card className="hover:shadow-md transition-shadow duration-300 max-w-[calc(96vw_-_var(--sidebar-width))] overflow-x-hidden">
             <CardHeader className="pb-4">
               <CardTitle className="text-base sm:text-lg">
                 Payroll Results

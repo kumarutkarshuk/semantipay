@@ -12,14 +12,14 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
   return (
     <ClerkProvider
       appearance={{
         baseTheme: theme === "dark" ? dark : undefined,
       }}
     >
-      <SidebarProvider>
+      <SidebarProvider className="overflow-x-hidden">
         <AppSidebar />
         <main className="flex-1">{children}</main>
       </SidebarProvider>
