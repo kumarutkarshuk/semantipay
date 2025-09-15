@@ -2,6 +2,10 @@
 
 An AI-powered system that automates payroll processing while meeting compliance rules worldwide.
 
+## Architecture & Tech Implementation
+
+<img width="1445" height="1515" alt="agentic-payroll-arch" src="https://github.com/user-attachments/assets/db90d820-5b0b-4c64-a805-ff85c9e65e11" />
+
 ## Getting Started
 
 ### Environment Variables
